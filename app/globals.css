@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  width: 4px;
+  border-radius: 80px;
+  background-color: #96fab7;
+}
+
+@layer components {
+  .container {
+    max-width: 1536px;
+    @apply mx-auto;
+  }
+  .section-gap {
+    @apply lg:mt-30 mt-20;
+  }
+}

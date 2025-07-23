@@ -1,0 +1,73 @@
+"use client";
+import React, { useState } from "react";
+import dynamic from "next/dynamic";
+import { FaEye } from "react-icons/fa";
+
+const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
+
+
+const MyTextEditor = ({
+  value,
+  onChange,
+  error,
+}: {
+  value: string;
+  onChange: (p: string) => void;
+  error: string;
+}) => {
+  const [isPreview,setIsPreview] = useState(false)
+  const config = {
+    readonly: false,
+    height: 400,
+    toolbarAdaptive: false,
+    toolbarButtonSize: "middle" as const,
+    buttons: [
+      "bold",
+      "italic",
+      "underline",
+      "strikethrough",
+      "|",
+      "align",
+      "ul",
+      "ol",
+      "|",
+      "font",
+      "fontsize",
+      "brush",
+      "|",
+      "image",
+      "table",
+      "link",
+      "|",
+      "undo",
+      "redo",
+      "|",
+      "fullsize",
+    ],
+    style: {
+      table: "border-collapse: collapse; width: 100%;",
+      "td, th": "border: 1px solid #ddd; padding: 8px;",
+    },
+  };
+
+  return (
+    <div>
+      <JoditEditor
+        value={value}
+        config={config}
+        onBlur={(newContent: string) => onChange(newContent)}
+      />
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+      <div onClick={()=>setIsPreview(!isPreview)} className="flex items-center gap-5 mt-4">
+      <FaEye />
+      <p>Preview Description</p>
+      </div>
+     { isPreview && <div style={{ marginTop: "20px" }}>
+        <h3>Preview:</h3>
+        <div dangerouslySetInnerHTML={{ __html: value }} />
+      </div>}
+    </div>
+  );
+};
+
+export default MyTextEditor;
