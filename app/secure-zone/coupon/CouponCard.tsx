@@ -74,7 +74,7 @@ const CouponCard = ({
         <div className="mt-4 flex space-x-3">
           <button
             onClick={() => onEdit()}
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            className="text-sm hidden text-blue-600 hover:text-blue-800 font-medium"
           >
             Edit
           </button>
