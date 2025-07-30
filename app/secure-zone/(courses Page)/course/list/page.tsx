@@ -33,6 +33,7 @@ import {
   Delete,
   MoreVert,
 } from "@mui/icons-material";
+import Image from "next/image";
 
 interface Course {
   _id: string;
@@ -96,7 +97,7 @@ const CourseList = () => {
   const [filters, setFilters] = useState<Filters>({
     page: 1,
     perPage: 10,
-    orderBy: "createdAt_desc",
+    orderBy: "createdAt",
     searchText: "",
     basicStatus: "",
     status: "",
@@ -173,11 +174,10 @@ const CourseList = () => {
           >
             Tk {main.toFixed(2)}
           </Typography>
-       
-            <Typography variant="caption" color="error.main" sx={{ ml: 1 }}>
-              {discount}Tk off
-            </Typography>
-      
+
+          <Typography variant="caption" color="error.main" sx={{ ml: 1 }}>
+            {discount}Tk off
+          </Typography>
         </Box>
       );
     } else {
@@ -326,108 +326,105 @@ const CourseList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {isLoading ? (
-              Array.from({ length: filters.perPage }).map((_, index) => (
-                <TableRow key={`skeleton-${index}`}>
-                  <TableCell>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Skeleton variant="circular" width={40} height={40} />
-                      <Skeleton variant="text" width={150} />
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" width={80} />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" width={60} />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" width={60} />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" width={60} />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" width={80} />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" width={120} />
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : isError ? (
-              <TableRow>
-                <TableCell colSpan={8} align="center">
-                  Error loading courses
-                </TableCell>
-              </TableRow>
-            ) : (
-              data?.courses.map((course: Course) => (
-                <TableRow key={course._id} hover>
-                  <TableCell>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Avatar
-                        src={course.media.thumbnail}
-                        alt={course.basicInfo.title}
-                        sx={{ width: 56, height: 56 }}
-                      />
-                      <Box>
-                        <Typography variant="body1" fontWeight="medium">
-                          {course.basicInfo.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {course.basicInfo.slug}
-                        </Typography>
+            {isLoading
+              ? Array.from({ length: filters.perPage }).map((_, index) => (
+                  <TableRow key={`skeleton-${index}`}>
+                    <TableCell>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                      >
+                        <Skeleton variant="circular" width={40} height={40} />
+                        <Skeleton variant="text" width={150} />
                       </Box>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {course.basicInfo.creator.first_name}{" "}
-                    {course.basicInfo.creator.last_name}
-                  </TableCell>
-                  <TableCell>{getPriceDisplay(course)}</TableCell>
-                  <TableCell>
-                    {Math.round(calculateTotalDuration(course) / 60)} hrs
-                  </TableCell>
-                  <TableCell>{countFreeLessons(course)}</TableCell>
-                  <TableCell>{course.sections.length}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={course.status}
-                      color={getStatusColor(course.status)}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <Tooltip title="View">
-                        <IconButton size="small">
-                          <Visibility fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Edit">
-                        <IconButton size="small">
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete">
-                        <IconButton size="small">
-                          <Delete fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="More">
-                        <IconButton size="small">
-                          <MoreVert fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={80} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={60} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={60} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={60} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={80} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={120} />
+                    </TableCell>
+                  </TableRow>
+                ))
+              : data?.courses.map((course: Course) => (
+                  <TableRow key={course._id} hover>
+                    <TableCell>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                      >
+                        <Image
+                          src={course.media.thumbnail}
+                          alt={course.basicInfo.title}
+                          width={56}
+                          height={56}
+                        />
+                        <Box>
+                          <Typography variant="body1" fontWeight="medium">
+                            {course.basicInfo.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {course.basicInfo.slug}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      {course.basicInfo.creator.first_name}{" "}
+                      {course.basicInfo.creator.last_name}
+                    </TableCell>
+                    <TableCell>{getPriceDisplay(course)}</TableCell>
+                    <TableCell>
+                      {Math.round(calculateTotalDuration(course) / 60)} hrs
+                    </TableCell>
+                    <TableCell>{countFreeLessons(course)}</TableCell>
+                    <TableCell>{course.sections.length}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={course.status}
+                        color={getStatusColor(course.status)}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <Tooltip title="View">
+                          <IconButton size="small">
+                            <Visibility fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Edit">
+                          <IconButton size="small">
+                            <Edit fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton size="small">
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="More">
+                          <IconButton size="small">
+                            <MoreVert fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </TableContainer>

@@ -14,7 +14,6 @@ import {
   FaChevronRight,
   FaShoppingBag,
   FaChartLine,
-  FaUsers,
 } from "react-icons/fa";
 
 import logo from "@/public/assets/logo.png";
@@ -24,7 +23,11 @@ import { signOut } from "next-auth/react";
 
 // Dashboard and Main Routes
 const mainLinks = [
-  { title: "Dashboard", href: "secure-zone", icon: <FaHome className="text-green-600" /> },
+  {
+    title: "Dashboard",
+    href: "secure-zone",
+    icon: <FaHome className="text-green-600" />,
+  },
   {
     title: "All Orders",
     href: "secure-zone/orders",
@@ -80,14 +83,9 @@ const courseLinks = [
     icon: <FaPlusCircle className="text-green-600" />,
   },
   {
-    title: "Free Courses",
-    href: "secure-zone/courses/free",
+    title: "Coupon",
+    href: "secure-zone/coupon",
     icon: <FaTags className="text-green-600" />,
-  },
-  {
-    title: "Paid Courses",
-    href: "secure-zone/courses/paid",
-    icon: <FaMoneyBillWave className="text-green-600" />,
   },
   {
     title: "Static Course",

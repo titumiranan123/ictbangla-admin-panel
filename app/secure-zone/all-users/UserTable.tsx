@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -29,9 +30,9 @@ const UserTable = () => {
     userRole: "",
     search: "",
   });
-  console.log(filters)
+  console.log(filters);
   const { data, isLoading, refetch } = useAllUserList(filters);
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = useState(0);
 
   // Reset page when filters change or on initial load
   useEffect(() => {
@@ -41,37 +42,37 @@ const UserTable = () => {
   // Handle page changes
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
-    setFilters(prev => ({ ...prev, page: newPage + 1 }));
+    setFilters((prev) => ({ ...prev, page: newPage + 1 }));
     window.scrollTo(0, 0);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const newRowsPerPage = parseInt(event.target.value, 10);
-    setFilters(prev => ({ ...prev, perPage: newRowsPerPage }));
+    setFilters((prev) => ({ ...prev, perPage: newRowsPerPage }));
   };
 
   const handleRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters(prev => ({ ...prev, userRole: event.target.value }));
+    setFilters((prev) => ({ ...prev, userRole: event.target.value }));
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters(prev => ({ ...prev, search: event.target.value }));
+    setFilters((prev) => ({ ...prev, search: event.target.value }));
   };
 
   const clearSearch = () => {
-    setFilters(prev => ({ ...prev, search: "" }));
+    setFilters((prev) => ({ ...prev, search: "" }));
   };
-
-  // Skeleton loader rows
-  const skeletonRows = Array(filters.perPage).fill(0);
 
   // Role options
   const roleOptions = [
     { value: "", label: "All Roles" },
     { value: "ADMIN", label: "Admin" },
     { value: "USER", label: "User" },
-    // Add more roles as needed
   ];
+  // Skeleton loader rows
+  const skeletonRows = Array(filters.perPage).fill(0);
 
   return (
     <div className="p-4">
@@ -99,7 +100,7 @@ const UserTable = () => {
             </MenuItem>
           ))}
         </TextField>
-        
+
         <TextField
           label="Search Users"
           variant="outlined"
@@ -136,104 +137,112 @@ const UserTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {isLoading ? (
-              skeletonRows.map((_, index) => (
-                <TableRow key={`skeleton-${index}`}>
-                  <TableCell>
-                    <div className="flex items-center space-x-3">
-                      <Skeleton variant="circular" width={40} height={40} />
-                      <div className="flex-1">
-                        <Skeleton variant="text" width="80%" />
-                        <Skeleton variant="text" width="60%" />
+            {isLoading
+              ? skeletonRows.map((_, index) => (
+                  <TableRow key={`skeleton-${index}`}>
+                    <TableCell>
+                      <div className="flex items-center space-x-3">
+                        <Skeleton variant="circular" width={40} height={40} />
+                        <div className="flex-1">
+                          <Skeleton variant="text" width="80%" />
+                          <Skeleton variant="text" width="60%" />
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="rectangular" width={80} height={24} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" />
+                    </TableCell>
+                    <TableCell>
                       <Skeleton variant="rectangular" width={80} height={24} />
-                      <Skeleton variant="rectangular" width={80} height={24} />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton variant="text" width={100} />
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              data?.users?.map((user: any) => (
-                <TableRow key={user._id} className="hover:bg-gray-50">
-                  <TableCell>
-                    <div className="flex items-center space-x-3">
-                      {user.profile_image ? (
-                        <Avatar
-                          src={user.profile_image}
-                          alt={`${user.first_name} ${user.last_name}`}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Skeleton
+                          variant="rectangular"
+                          width={80}
+                          height={24}
                         />
-                      ) : (
-                        <Avatar>
-                          {user.first_name?.[0]}
-                          {user.last_name?.[0]}
-                        </Avatar>
-                      )}
-                      <div>
-                        <p className="font-medium">
-                          {user.first_name} {user.last_name}
-                        </p>
-                        <p className="text-sm text-gray-500">{user.role}</p>
+                        <Skeleton
+                          variant="rectangular"
+                          width={80}
+                          height={24}
+                        />
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{user.user_name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={user.login_type}
-                      size="small"
-                      className={
-                        user.login_type === "GOOGLE"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-green-100 text-green-800"
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Chip
-                        label={user.is_verified ? "Verified" : "Unverified"}
-                        size="small"
-                        color={user.is_verified ? "success" : "default"}
-                      />
-                      <Chip
-                        label={user.is_approve ? "Approved" : "Pending"}
-                        size="small"
-                        color={user.is_approve ? "success" : "warning"}
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {user.phone?.length > 0 ? (
-                      <div>
-                        <p>{user.phone[0].number}</p>
-                        {user.phone[0].is_primary_number && (
-                          <span className="text-xs text-green-600">Primary</span>
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={100} />
+                    </TableCell>
+                  </TableRow>
+                ))
+              : data?.users?.map((user: any) => (
+                  <TableRow key={user._id} className="hover:bg-gray-50">
+                    <TableCell>
+                      <div className="flex items-center space-x-3">
+                        {user.profile_image ? (
+                          <Avatar
+                            src={user.profile_image}
+                            alt={`${user.first_name} ${user.last_name}`}
+                          />
+                        ) : (
+                          <Avatar>
+                            {user.first_name?.[0]}
+                            {user.last_name?.[0]}
+                          </Avatar>
                         )}
+                        <div>
+                          <p className="font-medium">
+                            {user.first_name} {user.last_name}
+                          </p>
+                          <p className="text-sm text-gray-500">{user.role}</p>
+                        </div>
                       </div>
-                    ) : (
-                      <span className="text-gray-400">-</span>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
+                    </TableCell>
+                    <TableCell>{user.user_name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={user.login_type}
+                        size="small"
+                        className={
+                          user.login_type === "GOOGLE"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-green-100 text-green-800"
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Chip
+                          label={user.is_verified ? "Verified" : "Unverified"}
+                          size="small"
+                          color={user.is_verified ? "success" : "default"}
+                        />
+                        <Chip
+                          label={user.is_approve ? "Approved" : "Pending"}
+                          size="small"
+                          color={user.is_approve ? "success" : "warning"}
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {user.phone?.length > 0 ? (
+                        <div>
+                          <p>{user.phone[0].number}</p>
+                          {user.phone[0].is_primary_number && (
+                            <span className="text-xs text-green-600">
+                              Primary
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
       </TableContainer>

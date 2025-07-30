@@ -1,15 +1,23 @@
-'use client'
+"use client";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useAllOrders } from "@/hooks/useAllOrders";
 import { useUpdateOrderCallStatus } from "./useUpdateOrderCallStatus";
-import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
 import OrderFilters from "./OrderFilters";
 import useOrderColumns from "./OrderColumns";
 import ViewOrderModal from "./ViewOrderModal";
 import EditOrderModal from "./EditOrderModal";
 import { Order, Filters } from "./types";
-import { Search as SearchIcon, FilterAlt as FilterIcon, Close as CloseIcon, Visibility as ViewIcon,
-  Edit as EditIcon } from "@mui/icons-material";
+import {
+  Search as SearchIcon,
+  FilterAlt as FilterIcon,
+  Close as CloseIcon,
+  Visibility as ViewIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material";
 
 const OrdersTable = () => {
   const [filters, setFilters] = useState<Filters>({
@@ -21,7 +29,7 @@ const OrdersTable = () => {
     search: "",
     courseId: "",
   });
-
+  const [selectedUser, setSelectedUser] = useState<string>("");
   const [searchInput, setSearchInput] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [editFormData, setEditFormData] = useState<boolean>(false);
@@ -55,7 +63,7 @@ const OrdersTable = () => {
       if (selectedOrder?._id === orderId) {
         setSelectedOrder((prev) => (prev ? { ...prev, [field]: value } : prev));
       }
-     
+
       updateOrderMutation({ orderId, updates: { [field]: value } });
     },
     [selectedOrder, editFormData, updateOrderMutation]
@@ -97,12 +105,13 @@ const OrdersTable = () => {
         >
           <ViewIcon fontSize="small" />
         </button>
-        
       </div>
     ),
   });
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value, page: 1 }));
   };
@@ -124,7 +133,7 @@ const OrdersTable = () => {
     <div className="container mx-auto p-4">
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-4">Order Management</h1>
-        
+
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
           <div className="relative flex-grow max-w-md">
             <input
@@ -141,12 +150,12 @@ const OrdersTable = () => {
 
           <div className="flex gap-2">
             <button
-          onClick={() => setEditFormData(true)}
-          className="p-1 text-purple-500 hover:text-purple-700"
-          title="Edit"
-        >
-          <EditIcon fontSize="small" />
-        </button>
+              onClick={() => setEditFormData(true)}
+              className="p-1 text-purple-500 hover:text-purple-700"
+              title="Edit"
+            >
+              <EditIcon fontSize="small" />
+            </button>
             <button
               onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
               className="px-4 py-2 border rounded flex items-center gap-2"
@@ -155,7 +164,8 @@ const OrdersTable = () => {
               <span>Filters</span>
             </button>
             {Object.values(filters).some(
-              (val) => val !== "" && val !== "FROM_NEW" && val !== 10 && val !== 1
+              (val) =>
+                val !== "" && val !== "FROM_NEW" && val !== 10 && val !== 1
             ) && (
               <button
                 onClick={resetFilters}
@@ -183,16 +193,11 @@ const OrdersTable = () => {
         <ViewOrderModal
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
-         
         />
       )}
 
       {editFormData && (
-        <EditOrderModal
-         
-          onClose={() => setEditFormData(false)}
-          
-        />
+        <EditOrderModal onClose={() => setEditFormData(false)} />
       )}
     </div>
   );

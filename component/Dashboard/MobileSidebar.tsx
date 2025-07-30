@@ -1,7 +1,22 @@
-'use client'
+"use client";
 import React from "react";
 import { FaX } from "react-icons/fa6";
-import {  FaChalkboardTeacher, FaCog, FaHome, FaPowerOff, FaUserGraduate, FaBook, FaPlusCircle, FaListUl, FaTags, FaMoneyBillWave, FaChevronDown, FaChevronRight, FaShoppingBag, FaChartLine } from "react-icons/fa";
+import {
+  FaChalkboardTeacher,
+  FaCog,
+  FaHome,
+  FaPowerOff,
+  FaUserGraduate,
+  FaBook,
+  FaPlusCircle,
+  FaListUl,
+  FaTags,
+  FaMoneyBillWave,
+  FaChevronDown,
+  FaChevronRight,
+  FaShoppingBag,
+  FaChartLine,
+} from "react-icons/fa";
 import logo from "@/public/assets/logo.png";
 import CustomLink from "../../utils/CustomLink";
 import Image from "next/image";
@@ -9,35 +24,44 @@ import { signOut } from "next-auth/react";
 
 // Dashboard and Main Routes
 const mainLinks = [
-  { title: "Dashboard", href: "/secure-zone", icon: <FaHome className="text-green-600" /> },
+  {
+    title: "Dashboard",
+    href: "secure-zone",
+    icon: <FaHome className="text-green-600" />,
+  },
   {
     title: "All Orders",
-    href: "/secure-zone/orders",
+    href: "secure-zone/orders",
     icon: <FaShoppingBag className="text-green-600" />,
   },
   {
     title: "Users",
-    href: "/secure-zone/all-users",
+    href: "secure-zone/all-users",
+    icon: <FaUserGraduate className="text-green-600" />,
+  },
+  {
+    title: "All Agent",
+    href: "secure-zone/agent/list",
     icon: <FaUserGraduate className="text-green-600" />,
   },
   {
     title: "Blogs",
-    href: "/secure-zone/blogs/all",
+    href: "secure-zone/blogs/all",
     icon: <FaBook className="text-green-600" />,
   },
   {
     title: "Instructors",
-    href: "/secure-zone/instructors",
+    href: "secure-zone/instructors",
     icon: <FaChalkboardTeacher className="text-green-600" />,
   },
   {
     title: "Analytics",
-    href: "/secure-zone/analytics",
+    href: "secure-zone/analytics",
     icon: <FaChartLine className="text-green-600" />,
   },
   {
     title: "Settings",
-    href: "/secure-zone/settings",
+    href: "secure-zone/settings",
     icon: <FaCog className="text-green-600" />,
   },
 ];
@@ -46,27 +70,32 @@ const mainLinks = [
 const courseLinks = [
   {
     title: "All Courses",
-    href: "/secure-zone/course/list",
+    href: "secure-zone/course/list",
     icon: <FaBook className="text-green-600" />,
   },
   {
-    title: "Add New Course",
-    href: "/secure-zone/course/create",
+    title: "Course Category ",
+    href: "secure-zone/course/category",
     icon: <FaPlusCircle className="text-green-600" />,
   },
   {
-    title: "Free Courses",
-    href: "/secure-zone/course/free",
+    title: "Add New Course",
+    href: "secure-zone/course/create",
+    icon: <FaPlusCircle className="text-green-600" />,
+  },
+  {
+    title: "Coupon",
+    href: "secure-zone/coupon",
     icon: <FaTags className="text-green-600" />,
   },
   {
     title: "Paid Courses",
-    href: "/secure-zone/course/paid",
+    href: "secure-zone/courses/paid",
     icon: <FaMoneyBillWave className="text-green-600" />,
   },
   {
     title: "Static Course",
-    href: "/secure-zone/course/static",
+    href: "secure-zone/courses/static",
     icon: <FaListUl className="text-green-600" />,
   },
 ];
@@ -75,14 +104,14 @@ const courseLinks = [
 const utilityLinks = [
   {
     title: "Logout",
+
     icon: <FaPowerOff className="text-red-500" />,
   },
 ];
-
-const MobileSidebar: React.FC<{ open: boolean; setOpen: (p: boolean) => void }> = ({
-  open,
-  setOpen,
-}) => {
+const MobileSidebar: React.FC<{
+  open: boolean;
+  setOpen: (p: boolean) => void;
+}> = ({ open, setOpen }) => {
   const [expandedSections, setExpandedSections] = React.useState({
     main: true,
     courses: true,
@@ -102,11 +131,11 @@ const MobileSidebar: React.FC<{ open: boolean; setOpen: (p: boolean) => void }> 
       } fixed inset-0 z-50 transition-transform duration-300 ease-in-out lg:hidden`}
     >
       {/* Overlay */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/30"
         onClick={() => setOpen(!open)}
       />
-      
+
       {/* Sidebar Content */}
       <div className="relative max-w-xs w-full h-full bg-green-50 overflow-y-auto">
         {/* Close Button */}
@@ -117,7 +146,7 @@ const MobileSidebar: React.FC<{ open: boolean; setOpen: (p: boolean) => void }> 
         >
           <FaX className="text-green-700" />
         </button>
-        
+
         {/* Sidebar Inner Content */}
         <div className="flex flex-col h-full p-4">
           {/* Logo Area */}
@@ -143,9 +172,8 @@ const MobileSidebar: React.FC<{ open: boolean; setOpen: (p: boolean) => void }> 
             </button>
             {expandedSections.main && (
               <div className="flex flex-col gap-1 pl-2">
-                {mainLinks.map((link,idx) => (
-                  <button  key={idx} onClick={() => setOpen(!open)}>
-
+                {mainLinks.map((link, idx) => (
+                  <button key={idx} onClick={() => setOpen(!open)}>
                     <CustomLink
                       key={link.href}
                       title={link.title}
@@ -153,7 +181,6 @@ const MobileSidebar: React.FC<{ open: boolean; setOpen: (p: boolean) => void }> 
                       icon={link.icon}
                       className="rounded-xl hover:bg-green-200 transition-all text-green-800 font-medium hover:text-green-900 hover:pl-3 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
                       style={{ padding: "12px 16px" }}
-                     
                     />
                   </button>
                 ))}
@@ -179,9 +206,8 @@ const MobileSidebar: React.FC<{ open: boolean; setOpen: (p: boolean) => void }> 
             </button>
             {expandedSections.courses && (
               <div className="flex flex-col gap-1 pl-2">
-                {courseLinks.map((link,idx) => (
-                  <button key={idx}   onClick={() => setOpen(!open)}>
-
+                {courseLinks.map((link, idx) => (
+                  <button key={idx} onClick={() => setOpen(!open)}>
                     <CustomLink
                       key={link.href}
                       title={link.title}
@@ -189,7 +215,6 @@ const MobileSidebar: React.FC<{ open: boolean; setOpen: (p: boolean) => void }> 
                       icon={link.icon}
                       className="rounded-xl hover:bg-green-200 transition-all text-green-800 font-medium hover:text-green-900 hover:pl-3 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
                       style={{ padding: "12px 16px" }}
-                   
                     />
                   </button>
                 ))}

@@ -14,52 +14,32 @@ import {
   FormControl,
   InputLabel,
   CircularProgress,
-  Grid,
   Typography,
   Divider,
   Avatar,
   IconButton,
   Paper,
-  InputAdornment,
 } from "@mui/material";
-import {
-  FilterList,
-  Search,
-  Close,
-  
-  Person,
-  Email,
-  Phone,
-  Note,
-
-} from "@mui/icons-material";
+import { FilterList, Search, Close } from "@mui/icons-material";
 import useCourseList from "@/hooks/useCourseList";
 
 import { api_url } from "@/hooks/apiurl";
 import toast from "react-hot-toast";
+import UserFilter from "./UserFilter";
+import { useAllOrders } from "@/hooks/useAllOrders";
 
 interface EditOrderModalProps {
   onClose: () => void;
 }
 
-const paymentMethodOptions = [
-  { value: "SSL_PAY", label: "SSL Payment" },
-  { value: "BAKSH", label: "bKash" },
-
-];
-
-const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
+const EditOrderModal = ({ onClose }: EditOrderModalProps) => {
+  const [selectedUser, setSelectedUser] = useState<string>("");
   const [formData, setFormData] = useState<any>({
-    name: "",
-    email: "",
-    phone: "",
-    payment_method: "",
     courses: [
       {
         courseId: "",
-      
       },
-    ]
+    ],
   });
 
   const [filters, setFilters] = useState({
@@ -72,9 +52,8 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
   });
 
   const { data: courseData, isLoading: courseLoading } = useCourseList(filters);
-
   const handleChange = (field: keyof any, value: any) => {
-    setFormData((prev:any) => ({ ...prev, [field]: value }));
+    setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
   const handleCourseChange = (index: number, field: string, value: any) => {
@@ -88,31 +67,36 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
       ...(formData.courses || []),
       {
         courseId: "",
-        price: 0,
-        paymentStatus: "UNPAID",
       },
     ]);
   };
-
+  const { refetch } = useAllOrders();
   const removeCourse = (index: number) => {
     const updatedCourses = [...(formData.courses || [])];
     updatedCourses.splice(index, 1);
     handleChange("courses", updatedCourses);
   };
 
-  const handleSubmit =async () => {
-   
+  const handleSubmit = async () => {
     try {
-     const res =  await api_url.post('/v1/admin-user/manual-course-registration',formData)
-      if(res.status === 200 || res.status ===201){
-        toast.success("Order Create success")
-        onClose()
-      }toast.error("Order create failed")
+      const res = await api_url.post(
+        "/v1/admin-user/manual-course-registration",
+        {
+          ...formData,
+          userId: selectedUser,
+        }
+      );
+      if (res.status === 200 || res.status === 201) {
+        toast.success("Order Create success");
+        refetch();
+        onClose();
+      } else {
+        toast.error("Order create failed");
+      }
     } catch (error) {
-      onClose()
-      console.log(error)
+      onClose();
+      console.log(error);
     }
-  
   };
 
   const handleFilterChange = (field: string, value: any) => {
@@ -150,71 +134,19 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
       <DialogContent dividers>
         <div className="continer">
           {/* Customer Information */}
-          <div >
+          <div>
             <Paper elevation={0} sx={{ p: 2, border: "1px solid #eee" }}>
               <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
                 Customer Information
               </Typography>
               <Divider sx={{ mb: 2 }} />
 
-              <TextField
-                label="Name"
-                fullWidth
-                margin="normal"
-                value={formData?.name || ""}
-                onChange={(e) => handleChange("name", e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Person color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <TextField
-                label="Email"
-                fullWidth
-                margin="normal"
-                value={formData?.email || ""}
-                onChange={(e) => handleChange("email", e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Email color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <TextField
-                label="Phone"
-                fullWidth
-                margin="normal"
-                value={formData?.phone || ""}
-                onChange={(e) => handleChange("phone", e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Phone color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
               <FormControl fullWidth margin="normal">
                 <InputLabel>Payment Method</InputLabel>
-                <Select
-                  value={formData?.payment_method || ""}
-                  label="Payment Method"
-                  onChange={(e) => handleChange("payment_method", e.target.value)}
-                >
-                  {paymentMethodOptions.map((method) => (
-                    <MenuItem key={method.value} value={method.value}>
-                      {method.label}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <UserFilter
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                />
               </FormControl>
             </Paper>
           </div>
@@ -233,9 +165,13 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
                   size="small"
                   placeholder="Search courses..."
                   value={filters.searchText}
-                  onChange={(e) => handleFilterChange("searchText", e.target.value)}
+                  onChange={(e) =>
+                    handleFilterChange("searchText", e.target.value)
+                  }
                   InputProps={{
-                    startAdornment: <Search sx={{ mr: 1, color: "text.disabled" }} />,
+                    startAdornment: (
+                      <Search sx={{ mr: 1, color: "text.disabled" }} />
+                    ),
                   }}
                   sx={{ width: 250 }}
                 />
@@ -245,7 +181,9 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
                   <Select
                     value={filters.status}
                     label="Status"
-                    onChange={(e) => handleFilterChange("status", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("status", e.target.value)
+                    }
                   >
                     <MenuItem value="">All Status</MenuItem>
                     <MenuItem value="PUBLISHED">Published</MenuItem>
@@ -259,7 +197,9 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
                   <Select
                     value={filters.basicStatus}
                     label="Basic Status"
-                    onChange={(e) => handleFilterChange("basicStatus", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("basicStatus", e.target.value)
+                    }
                   >
                     <MenuItem value="">All</MenuItem>
                     <MenuItem value="FREE">Free</MenuItem>
@@ -277,14 +217,27 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
               </Box>
 
               {/* Course List */}
-              {(formData.courses || []).map((course:any, index:number) => (
-                <Box key={index} mb={3} p={2} sx={{ border: "1px dashed #ddd", borderRadius: 1 }}>
-                  <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              {(formData.courses || []).map((course: any, index: number) => (
+                <Box
+                  key={index}
+                  mb={3}
+                  p={2}
+                  sx={{ border: "1px dashed #ddd", borderRadius: 1 }}
+                >
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb={2}
+                  >
                     <Typography variant="subtitle2">
                       Course {index + 1}
                     </Typography>
                     {index > 0 && (
-                      <IconButton size="small" onClick={() => removeCourse(index)}>
+                      <IconButton
+                        size="small"
+                        onClick={() => removeCourse(index)}
+                      >
                         <Close fontSize="small" />
                       </IconButton>
                     )}
@@ -295,7 +248,9 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
                     <Select
                       value={course.courseId || ""}
                       label="Select Course"
-                      onChange={(e) => handleCourseChange(index, "courseId", e.target.value)}
+                      onChange={(e) =>
+                        handleCourseChange(index, "courseId", e.target.value)
+                      }
                       disabled={courseLoading}
                     >
                       {courseLoading ? (
@@ -306,19 +261,18 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
                         courseData?.courses?.map((c: any) => (
                           <MenuItem key={c._id} value={c._id}>
                             <Box display="flex" alignItems="center">
-                              <Avatar 
-                                src={c?.basicInfo?.thumbnail} 
+                              <Avatar
+                                src={c?.basicInfo?.thumbnail}
                                 sx={{ width: 24, height: 24, mr: 1 }}
                               />
-                              {c?.basicInfo?.title || "Untitled"} - ${c?.pricing?.amount || 0}
+                              {c?.basicInfo?.title || "Untitled"} - $
+                              {c?.pricing?.amount || 0}
                             </Box>
                           </MenuItem>
                         ))
                       )}
                     </Select>
                   </FormControl>
-
-                 
                 </Box>
               ))}
 
@@ -331,25 +285,6 @@ const EditOrderModal = ({  onClose }: EditOrderModalProps) => {
                 Add Another Course
               </Button>
             </Paper>
-
-            {/* Additional Notes */}
-            <Box mt={3}>
-              <TextField
-                label="Additional Notes"
-                multiline
-                rows={3}
-                fullWidth
-                value={formData?.note || ""}
-                onChange={(e) => handleChange("note", e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Note color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
           </div>
         </div>
       </DialogContent>
