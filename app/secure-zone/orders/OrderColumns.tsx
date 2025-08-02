@@ -4,10 +4,10 @@ import { MRT_ColumnDef } from "material-react-table";
 
 import OrderStatusCell from "./OrderStatusCell";
 
-import Image from "next/image";
 import OrderResultCell from "./OrderResultCell";
 import OrderNoteCell from "./OrderNoteCell";
 import { OrderAgentCell } from "./Orderagent";
+import { handleToCopyText } from "@/utils/handleCopy";
 
 const useOrderColumns = (
   handleInlineUpdate: (orderId: string, field: keyof any, value: any) => void
@@ -26,9 +26,19 @@ const useOrderColumns = (
         Cell: ({ row }) => (
           <div>
             <div className="font-medium">{row.original.name}</div>
-            <div className="text-sm text-gray-500">{row.original.email}</div>
+            <div
+              onClick={() => handleToCopyText(row.original.email)}
+              className="text-sm text-gray-500"
+            >
+              {row.original.email}
+            </div>
             {row.original.phone !== "N/A" && (
-              <div className="text-sm text-gray-500">{row.original.phone}</div>
+              <div
+                onClick={() => handleToCopyText(row.original.phone)}
+                className="text-sm text-gray-500"
+              >
+                {row.original.phone}
+              </div>
             )}
           </div>
         ),
@@ -38,18 +48,8 @@ const useOrderColumns = (
         header: "Course",
         size: 200,
         Cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Image
-              src={row.original.course?.media?.thumbnail}
-              alt={row.original.course?.basicInfo?.title}
-              className="w-10 h-10 rounded object-cover"
-              priority
-              width={50}
-              height={50}
-            />
-            <div className="truncate max-w-[150px]">
-              {row.original.course?.basicInfo?.title}
-            </div>
+          <div className="truncate max-w-[150px]">
+            {row.original.course?.basicInfo?.title}
           </div>
         ),
       },
@@ -89,14 +89,18 @@ const useOrderColumns = (
       {
         accessorKey: "createdAt",
         header: "Date",
-        size: 120,
+        size: 180,
         Cell: ({ cell }) =>
-          new Date(cell.getValue<string>()).toLocaleDateString("en-US", {
+          new Date(cell.getValue<string>()).toLocaleString("en-US", {
             year: "numeric",
             month: "short",
             day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true, // চাইলে 24 ঘন্টার জন্য false করো
           }),
       },
+
       {
         accessorKey: "callStatus",
         header: "Call Status",

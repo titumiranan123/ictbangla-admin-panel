@@ -13,6 +13,7 @@ export const useUpdateOrderCallStatus = () => {
 
   return useMutation({
     mutationFn: async ({ orderId, updates }: UpdateOrderPayload) => {
+      console.log(orderId);
       if (updates && updates.result === "true") {
         await api_url.patch(
           `/v1/admin-user/add-agenda-on-purchase/${orderId._id}`,
@@ -28,7 +29,9 @@ export const useUpdateOrderCallStatus = () => {
           `/v1/admin-user/add-agenda-on-purchase/${orderId._id}`,
           updates
         );
-        await api_url.post(`/v1/admin-user/manual-admin-payment/${orderId}`);
+        await api_url.post(
+          `/v1/admin-user/manual-admin-payment/${orderId._id}`
+        );
         return;
       }
       const response = await api_url.patch(

@@ -36,7 +36,7 @@ const OrdersTable = () => {
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
   const { mutate: updateOrderMutation } = useUpdateOrderCallStatus();
-  const { data: orders, isLoading } = useAllOrders(filters);
+  const { data: orders, isLoading, refetch } = useAllOrders(filters);
 
   // Extract unique courses for filter
   const uniqueCourses = useMemo(() => {
@@ -197,7 +197,10 @@ const OrdersTable = () => {
       )}
 
       {editFormData && (
-        <EditOrderModal onClose={() => setEditFormData(false)} />
+        <EditOrderModal
+          onClose={() => setEditFormData(false)}
+          refetch={() => refetch()}
+        />
       )}
     </div>
   );

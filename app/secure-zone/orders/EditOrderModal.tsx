@@ -30,9 +30,10 @@ import { useAllOrders } from "@/hooks/useAllOrders";
 
 interface EditOrderModalProps {
   onClose: () => void;
+  refetch: () => void;
 }
 
-const EditOrderModal = ({ onClose }: EditOrderModalProps) => {
+const EditOrderModal = ({ onClose, refetch }: EditOrderModalProps) => {
   const [selectedUser, setSelectedUser] = useState<string>("");
   const [formData, setFormData] = useState<any>({
     courses: [
@@ -70,7 +71,6 @@ const EditOrderModal = ({ onClose }: EditOrderModalProps) => {
       },
     ]);
   };
-  const { refetch } = useAllOrders();
   const removeCourse = (index: number) => {
     const updatedCourses = [...(formData.courses || [])];
     updatedCourses.splice(index, 1);
