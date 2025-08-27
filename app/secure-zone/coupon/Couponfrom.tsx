@@ -33,7 +33,6 @@ const CouponForm = ({
       },
     ],
   });
-  console.log("formData", formData?.courses[0]?.courseId);
   const {
     register,
     handleSubmit,

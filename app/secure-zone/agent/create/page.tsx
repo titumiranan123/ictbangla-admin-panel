@@ -11,10 +11,8 @@ const AgentCreationForm = () => {
   } = useForm();
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     try {
       const res = await api_url.post("/v1/admin-user/call-agent",data);
-      console.log(res)
       if (res.status === 201 ) {
         toast.success("agent Create done");
       }

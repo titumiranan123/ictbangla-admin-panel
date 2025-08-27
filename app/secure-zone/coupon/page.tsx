@@ -20,7 +20,6 @@ interface Coupon {
 
 const CouponList = () => {
   const { data, isLoading, refetch } = useCouponList();
-  console.log(data?.coupons);
 
   const [showForm, setShowForm] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
@@ -74,7 +73,6 @@ const CouponList = () => {
   };
 
   const handleDeleteCoupon = (couponCode: string) => {
-    console.log(couponCode);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -88,7 +86,6 @@ const CouponList = () => {
         const res = await api_url.delete(
           `/v1/admin-user/delete/coupon/${couponCode}`
         );
-        console.log(res);
         if (res.status === 201) {
           refetch();
           Swal.fire({

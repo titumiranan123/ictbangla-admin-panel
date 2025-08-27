@@ -30,7 +30,6 @@ const UserTable = () => {
     userRole: "",
     search: "",
   });
-  console.log(filters);
   const { data, isLoading, refetch } = useAllUserList(filters);
   const [page, setPage] = useState(0);
 

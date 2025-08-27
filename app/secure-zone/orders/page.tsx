@@ -29,7 +29,6 @@ const OrdersTable = () => {
     search: "",
     courseId: "",
   });
-  const [selectedUser, setSelectedUser] = useState<string>("");
   const [searchInput, setSearchInput] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [editFormData, setEditFormData] = useState<boolean>(false);
@@ -42,8 +41,8 @@ const OrdersTable = () => {
   const uniqueCourses = useMemo(() => {
     const courseMap = new Map<string, Order["course"]>();
     orders?.data?.forEach((order: Order) => {
-      if (order.course && order.course._id) {
-        courseMap.set(order.course._id, order.course);
+      if (order?.course && order?.course?._id) {
+        courseMap?.set(order?.course?._id, order?.course);
       }
     });
     return Array.from(courseMap.values());

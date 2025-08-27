@@ -25,6 +25,17 @@ const BlogCard = ({
   onDelete,
   status = "published",
 }: BlogCardProps) => {
+  console.log({
+    id,
+    title,
+    short_description,
+    card_image,
+    category,
+    createdAt,
+    onEdit,
+    onDelete,
+    status,
+  });
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden border border-[#d1fadf] hover:shadow-lg transition-shadow duration-300">
       {/* Image */}
@@ -43,7 +54,6 @@ const BlogCard = ({
         )}
       </div>
 
-      {/* Content */}
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <span className="text-xs font-medium text-[#1cab55] bg-[#f6fef9] px-2 py-1 rounded">

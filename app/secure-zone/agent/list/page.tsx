@@ -65,7 +65,6 @@ const UserTable: React.FC = () => {
   });
 
   const { data: initialData, refetch } = useAllAgent(filterOptions);
-  console.log(initialData)
   const [users, setUsers] = useState<User[]>(initialData || []);
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -138,9 +137,8 @@ const UserTable: React.FC = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const res = await api_url.delete(`/v1/admin-user/call-agent/${userId}`);
-        if (res.status === 200 || res.status === 201)
-          refetch()
-          Swal.fire("Deleted!", "The user has been deleted.", "success");
+        if (res.status === 200 || res.status === 201) refetch();
+        Swal.fire("Deleted!", "The user has been deleted.", "success");
       }
     });
   };
