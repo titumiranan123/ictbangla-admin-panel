@@ -63,7 +63,7 @@ const OrdersTable = () => {
         setSelectedOrder((prev) => (prev ? { ...prev, [field]: value } : prev));
       }
 
-      updateOrderMutation({ orderId, updates: { [field]: value } });
+      updateOrderMutation({ orderId, updates: { [field]: value }, refetch });
     },
     [selectedOrder, editFormData, updateOrderMutation]
   );
@@ -186,7 +186,10 @@ const OrdersTable = () => {
         )}
       </div>
 
-      <MaterialReactTable table={table} />
+      <MaterialReactTable
+        key={`table-${filters.page}-${filters.perPage}`}
+        table={table}
+      />
 
       {selectedOrder && (
         <ViewOrderModal

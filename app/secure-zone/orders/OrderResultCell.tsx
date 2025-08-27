@@ -11,11 +11,16 @@ interface OrderResultCellProps {
 }
 
 const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
-  const currentResult = order.agenda ? order.agenda.result : undefined;
+  console.log(order);
+  const currentResult =
+    order?.agenda?.result && typeof order.agenda.result === "string"
+      ? order.agenda.result.toLowerCase()
+      : undefined;
+
   return (
     <div className="flex gap-2 items-center">
       <button
-        // disabled={currentResult === "true"}
+        disabled={currentResult === "true"}
         onClick={() => onUpdate(order, "result", "true")}
         className={`p-1  rounded ${
           currentResult === "true"
@@ -27,9 +32,9 @@ const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
         <CheckCircleOutline fontSize="small" />
       </button>
       <button
-        onClick={() => onUpdate(order, "result", "pending")}
+        onClick={() => onUpdate(order, "result", "PENDING")}
         className={`p-1 rounded ${
-          currentResult === "PENDING"
+          currentResult === "pending"
             ? "text-amber-500"
             : "text-gray-400 hover:text-amber-300"
         }`}
@@ -48,6 +53,7 @@ const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
       >
         <CancelOutlined fontSize="small" />
       </button>
+
       {currentResult !== undefined && (
         <span className="text-xs ml-1">
           {currentResult === "true"

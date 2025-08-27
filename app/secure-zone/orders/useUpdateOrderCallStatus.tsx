@@ -6,44 +6,34 @@ import { api_url } from "@/hooks/apiurl"; // তোমার axios instance
 interface UpdateOrderPayload {
   orderId: any;
   updates: Record<string, any>;
+  refetch: () => void;
 }
 
 export const useUpdateOrderCallStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ orderId, updates }: UpdateOrderPayload) => {
-      console.log(orderId);
-      if (updates && updates.result === "true") {
-        await api_url.patch(
-          `/v1/admin-user/add-agenda-on-purchase/${orderId._id}`,
-          updates
-        );
-        await api_url.post(
-          `/v1/admin-user/manual-admin-payment/${orderId?.paymentId?._id}`
-        );
-        return;
-      }
-      if (updates && updates.result === "false") {
-        await api_url.patch(
-          `/v1/admin-user/add-agenda-on-purchase/${orderId._id}`,
-          updates
-        );
-        await api_url.post(
-          `/v1/admin-user/manual-admin-payment/${orderId._id}`
-        );
-        return;
-      }
+    mutationFn: async ({ orderId, updates, refetch }: UpdateOrderPayload) => {
+      console.log("update =========>", updates.result);
+
       const response = await api_url.patch(
         `/v1/admin-user/add-agenda-on-purchase/${orderId._id}`,
         updates
       );
+
+      if (response.status === 201) {
+        await api_url.post(
+          `/v1/admin-user/manual-admin-payment/${
+            orderId?.paymentId?._id
+          }?paymentStatus=${updates.result === "true" ? "PAID" : "UNPAID"}`
+        );
+      }
       return response.data;
     },
 
     onSuccess: (data, variables) => {
-      const { orderId, updates } = variables;
-
+      const { orderId, updates, refetch } = variables;
+      refetch();
       console.log("✅ Order updated successfully:", data, variables);
 
       queryClient.setQueryData(["allOrders"], (oldData: any) => {
