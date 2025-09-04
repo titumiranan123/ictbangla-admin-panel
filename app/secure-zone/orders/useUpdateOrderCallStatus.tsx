@@ -1,7 +1,7 @@
 // hooks/useUpdateOrderCallStatus.ts
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api_url } from "@/hooks/apiurl"; // তোমার axios instance
+import { api_url } from "@/hooks/apiurl";
 
 interface UpdateOrderPayload {
   orderId: any;
@@ -14,19 +14,23 @@ export const useUpdateOrderCallStatus = () => {
 
   return useMutation({
     mutationFn: async ({ orderId, updates, refetch }: UpdateOrderPayload) => {
-      console.log("update =========>", updates.result);
-
       const response = await api_url.patch(
         `/v1/admin-user/add-agenda-on-purchase/${orderId._id}`,
         updates
       );
 
       if (response.status === 201) {
-        await api_url.post(
-          `/v1/admin-user/manual-admin-payment/${
-            orderId?.paymentId?._id
-          }?paymentStatus=${updates.result === "true" ? "PAID" : "UNPAID"}`
-        );
+        if (
+          updates?.result === "true" ||
+          updates?.result === "false" ||
+          updates?.result === "PENDING"
+        ) {
+          await api_url.post(
+            `/v1/admin-user/manual-admin-payment/${
+              orderId?.paymentId?._id
+            }?paymentStatus=${updates.result === "true" ? "PAID" : "UNPAID"}`
+          );
+        }
       }
       return response.data;
     },
@@ -34,7 +38,7 @@ export const useUpdateOrderCallStatus = () => {
     onSuccess: (data, variables) => {
       const { orderId, updates, refetch } = variables;
       refetch();
-      console.log("✅ Order updated successfully:", data, variables);
+      // console.log("✅ Order updated successfully:", data, variables);
 
       queryClient.setQueryData(["allOrders"], (oldData: any) => {
         if (!oldData) return oldData;

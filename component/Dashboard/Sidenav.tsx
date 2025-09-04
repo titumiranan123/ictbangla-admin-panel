@@ -20,6 +20,7 @@ import logo from "@/public/assets/logo.png";
 import CustomLink from "../../utils/CustomLink";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
+import { FaPhone } from "react-icons/fa6";
 
 // Dashboard and Main Routes
 const mainLinks = [
@@ -32,6 +33,11 @@ const mainLinks = [
     title: "All Orders",
     href: "secure-zone/orders",
     icon: <FaShoppingBag className="text-green-600" />,
+  },
+  {
+    title: "Number Lead",
+    href: "secure-zone/course-lead-number",
+    icon: <FaPhone className="text-green-600" />,
   },
   {
     title: "Users",

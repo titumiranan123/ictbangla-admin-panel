@@ -11,7 +11,6 @@ interface OrderResultCellProps {
 }
 
 const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
-  console.log(order);
   const currentResult =
     order?.agenda?.result && typeof order.agenda.result === "string"
       ? order.agenda.result.toLowerCase()

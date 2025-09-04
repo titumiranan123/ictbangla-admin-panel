@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { FaX } from "react-icons/fa6";
+import { FaPhone, FaX } from "react-icons/fa6";
 import {
   FaChalkboardTeacher,
   FaCog,
@@ -33,6 +33,11 @@ const mainLinks = [
     title: "All Orders",
     href: "secure-zone/orders",
     icon: <FaShoppingBag className="text-green-600" />,
+  },
+  {
+    title: "Number Lead",
+    href: "secure-zone/course-lead-number",
+    icon: <FaPhone className="text-green-600" />,
   },
   {
     title: "Users",
