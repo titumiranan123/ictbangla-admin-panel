@@ -1,4 +1,5 @@
-'use client'
+"use client";
+import { api_url } from "@/hooks/apiurl";
 import { useState } from "react";
 
 interface OrderNoteCellProps {
@@ -6,13 +7,19 @@ interface OrderNoteCellProps {
   onUpdate: (orderId: string, field: any, value: any) => void;
 }
 
-const OrderNoteCell = ({ order, onUpdate }: OrderNoteCellProps) => {
+const OrderNoteCell = ({ order }: OrderNoteCellProps) => {
   const [note, setNote] = useState(order?.agenda?.note || "");
 
-
-  const handleBlur = () => {
+  const handleBlur = async () => {
     if (note !== order?.agenda?.note) {
-      onUpdate(order, "note", note);
+      console.log("order update", order);
+      const response = await api_url.patch(
+        `/v1/admin-user/add-agenda-on-purchase/${order._id}`,
+        {
+          note: note,
+        }
+      );
+      console.log("note", response);
     }
   };
 

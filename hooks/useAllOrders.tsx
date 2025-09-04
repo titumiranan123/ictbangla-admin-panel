@@ -27,10 +27,13 @@ export const useAllOrders = (filters: OrderFilters = {}) => {
   const queryKey = [
     "allOrders",
     filters.page,
+    filters.perPage,
     filters.courseId,
+    filters.paymentStatus,
     filters.courseStatus,
     filters.orderBy,
     filters.paymentMethod,
+    filters.search,
   ];
 
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -45,6 +48,7 @@ export const useAllOrders = (filters: OrderFilters = {}) => {
       if (paymentStatus) params.append("paymentStatus", paymentStatus);
       if (courseStatus) params.append("courseStatus", courseStatus);
       if (paymentMethod) params.append("paymentMethod", paymentMethod);
+
       if (search) params.append("searchText", search);
       if (courseId) params.append("courseId", courseId);
 

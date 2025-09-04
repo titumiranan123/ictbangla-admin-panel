@@ -14,11 +14,11 @@ export const useUpdateOrderCallStatus = () => {
 
   return useMutation({
     mutationFn: async ({ orderId, updates, refetch }: UpdateOrderPayload) => {
+      // console.log("from updat function ", orderId);
       const response = await api_url.patch(
         `/v1/admin-user/add-agenda-on-purchase/${orderId._id}`,
         updates
       );
-
       if (response.status === 201) {
         if (
           updates?.result === "true" ||
@@ -38,8 +38,6 @@ export const useUpdateOrderCallStatus = () => {
     onSuccess: (data, variables) => {
       const { orderId, updates, refetch } = variables;
       refetch();
-      // console.log("✅ Order updated successfully:", data, variables);
-
       queryClient.setQueryData(["allOrders"], (oldData: any) => {
         if (!oldData) return oldData;
 
@@ -53,14 +51,11 @@ export const useUpdateOrderCallStatus = () => {
           ? updatedOrders
           : { ...oldData, data: updatedOrders };
       });
-
-      // ✅ ব্যাকআপ হিসেবে invalidate
       queryClient.invalidateQueries({ queryKey: ["allOrders"] });
     },
 
     onError: (error) => {
       console.error("❌ Error updating order:", error);
-      // তুমি চাইলে এখানে toast.notification বা error alert দেখাতে পারো
     },
   });
 };

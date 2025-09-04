@@ -17,7 +17,7 @@ const DashboardLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col overflow-x-hidden">
         {/* Header */}
-        <header className="sticky top-0 z-10 w-full bg-green-100 h-[80px] flex justify-between items-center px-2">
+        <header className="sticky top-0 z-10 w-full bg-green-100 h-[40px] flex justify-between items-center px-2">
           <div
             onClick={() => setOpen(!open)}
             className="flex flex-col mt-2 gap-1 cursor-pointer"
@@ -30,7 +30,7 @@ const DashboardLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         </header>
 
         {/* Page Content */}
-        <section className="flex-1 p-4 overflow-y-auto">{children}</section>
+        <section className="flex-1 p-1 overflow-y-auto">{children}</section>
       </main>
 
       {/* Mobile Sidebar */}
