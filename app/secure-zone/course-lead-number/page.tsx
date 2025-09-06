@@ -2,16 +2,11 @@
 
 import { useLeadNumber } from "@/hooks/useNumberLead";
 import React, { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Pagination,
-} from "@mui/material";
+import { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from "./DataTable";
+import { NumberAgent } from "./Nuberagent";
+import NumberNoteCell from "./NumberNoteCell";
+import NumberStatusCell from "./NumberStatusCell";
 
 const LeadNumber = () => {
   const [page, setPage] = useState(1);
@@ -20,74 +15,74 @@ const LeadNumber = () => {
     page,
   };
 
-  const { data, isLoading } = useLeadNumber(filter);
-
-  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
+  const { data, isLoading, refetch } = useLeadNumber(filter);
+  console.log(data?.response?.[0]?.call_agent);
 
   if (isLoading) return <p className="text-center py-6">Loading...</p>;
+
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "_id",
+      header: "ID",
+      cell: ({ row }) => row.original._id.slice(-6), // show last 6 chars
+    },
+    {
+      accessorKey: "course.title",
+      header: "Course",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <img
+            src={row.original.course.thumbnail}
+            alt={row.original.course.title}
+            className="w-10 h-10 rounded object-cover"
+          />
+          <span>{row.original.course.title}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "course.price",
+      header: "Price",
+      cell: ({ row }) => `৳ ${row.original.course.price}`,
+    },
+    {
+      accessorKey: "number",
+      header: "Number",
+    },
+    {
+      accessorKey: "callStatus",
+      header: "Call Status",
+      cell: ({ row }) => (
+        <NumberStatusCell order={row.original} refetch={refetch} />
+      ),
+    },
+    {
+      accessorKey: "note",
+      header: "Note",
+      cell: ({ row }) => (
+        <NumberNoteCell order={row.original} refetch={refetch} />
+      ),
+    },
+    {
+      accessorKey: "agent",
+      header: "Call Agent",
+      cell: ({ row }) => <NumberAgent order={row.original} refetch={refetch} />,
+    },
+    {
+      accessorKey: "action",
+      header: "Action",
+      cell: () => (
+        <button className="text-sm px-2 py-1 bg-blue-500 text-white rounded">
+          Call
+        </button>
+      ),
+    },
+  ];
 
   return (
     <div className="md:p-4 p-1">
       <h2 className="text-xl font-semibold mb-4">Lead Numbers</h2>
-
-      {/* Table */}
-      <TableContainer component={Paper} className="shadow-lg rounded-lg">
-        <Table>
-          <TableHead className="bg-gray-100">
-            <TableRow>
-              <TableCell className="font-bold">Course</TableCell>
-              <TableCell className="font-bold">Price</TableCell>
-              <TableCell className="font-bold">Number</TableCell>
-              <TableCell className="font-bold">Created At</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data?.response?.map((item: any) => (
-              <TableRow key={item._id}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={item.course.thumbnail}
-                      alt={item.course.title}
-                      className="w-12 h-12 lg:flex hidden rounded-lg object-cover"
-                    />
-                    <div>
-                      <p className="font-medium ">{item.course.title}</p>
-                      <p className="text-xs text-gray-500">
-                        {item.course.course_type}
-                      </p>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>৳ {item.course.price}</TableCell>
-                <TableCell>{item.number}</TableCell>
-                <TableCell>
-                  {new Date(item.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                    hour12: true, // চাইলে 24 ঘন্টার জন্য false করো
-                  })}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Pagination */}
-      <div className="flex justify-center mt-6">
-        <Pagination
-          count={data?.totalPages || 1}
-          page={page}
-          onChange={handleChange}
-          color="primary"
-        />
-      </div>
+      <DataTable data={data.response} columns={columns} />
     </div>
   );
 };
