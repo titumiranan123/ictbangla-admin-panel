@@ -7,7 +7,14 @@ import { DataTable } from "./DataTable";
 import { NumberAgent } from "./Nuberagent";
 import NumberNoteCell from "./NumberNoteCell";
 import NumberStatusCell from "./NumberStatusCell";
-
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
 const LeadNumber = () => {
   const [page, setPage] = useState(1);
 
@@ -16,26 +23,20 @@ const LeadNumber = () => {
   };
 
   const { data, isLoading, refetch } = useLeadNumber(filter);
-  console.log(data?.response?.[0]?.call_agent);
-
+  console.log(data);
   if (isLoading) return <p className="text-center py-6">Loading...</p>;
 
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "_id",
       header: "ID",
-      cell: ({ row }) => row.original._id.slice(-6), // show last 6 chars
+      cell: ({ row }) => row.original._id.slice(-6),
     },
     {
       accessorKey: "course.title",
       header: "Course",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <img
-            src={row.original.course.thumbnail}
-            alt={row.original.course.title}
-            className="w-10 h-10 rounded object-cover"
-          />
           <span>{row.original.course.title}</span>
         </div>
       ),
@@ -48,6 +49,18 @@ const LeadNumber = () => {
     {
       accessorKey: "number",
       header: "Number",
+    },
+    {
+      accessorKey: "date",
+      header: "Date",
+      cell: ({ row }) => {
+        const date = new Date(row.original.createdAt);
+        return date.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+      },
     },
     {
       accessorKey: "callStatus",
@@ -68,21 +81,62 @@ const LeadNumber = () => {
       header: "Call Agent",
       cell: ({ row }) => <NumberAgent order={row.original} refetch={refetch} />,
     },
-    {
-      accessorKey: "action",
-      header: "Action",
-      cell: () => (
-        <button className="text-sm px-2 py-1 bg-blue-500 text-white rounded">
-          Call
-        </button>
-      ),
-    },
+    // {
+    //   accessorKey: "action",
+    //   header: "Action",
+    //   cell: () => (
+    //     <button className="text-sm px-2 py-1 bg-blue-500 text-white rounded">
+    //       Call
+    //     </button>
+    //   ),
+    // },
   ];
 
   return (
     <div className="md:p-4 p-1">
       <h2 className="text-xl font-semibold mb-4">Lead Numbers</h2>
       <DataTable data={data.response} columns={columns} />
+      <Pagination>
+        <PaginationContent>
+          {/* Previous Button */}
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                if (page > 1) setPage(page - 1);
+              }}
+            />
+          </PaginationItem>
+
+          {/* Page Numbers */}
+          {Array.from({ length: data?.totalPages }).map((_, i) => (
+            <PaginationItem key={i}>
+              <PaginationLink
+                href="#"
+                isActive={page === i + 1}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPage(i + 1);
+                }}
+              >
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          {/* Next Button */}
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                if (page < data?.totalPages) setPage(page + 1);
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 };

@@ -14,8 +14,8 @@ export const useLeadNumber = (filters: FilterOptions = {}) => {
     queryFn: async () => {
       const params = new URLSearchParams();
 
-      if (filters.orderBy) {
-        params.append("orderBy", filters.orderBy);
+      if (!filters.orderBy) {
+        params.append("orderBy", "FROM_NEW");
       }
 
       if (filters.searchText) {
