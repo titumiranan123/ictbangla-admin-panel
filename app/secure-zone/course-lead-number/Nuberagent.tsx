@@ -31,7 +31,7 @@ export const NumberAgent = ({ order, refetch }: OrderAgentCellProps) => {
     <select
       value={order?.call_agent?._id || ""}
       onChange={(e) => handleChange(e.target.value)}
-      className="w-full p-1 border rounded text-sm"
+      className=" p-1 border rounded text-sm w-28"
     >
       <option value="" disabled>
         Select Agent

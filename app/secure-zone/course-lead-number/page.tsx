@@ -36,7 +36,10 @@ const LeadNumber = () => {
       accessorKey: "course.title",
       header: "Course",
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
+        <div
+          title={`${row.original.course.title}`}
+          className="flex items-center gap-2 w-[200px]  "
+        >
           <span>{row.original.course.title}</span>
         </div>
       ),
@@ -44,7 +47,7 @@ const LeadNumber = () => {
     {
       accessorKey: "course.price",
       header: "Price",
-      cell: ({ row }) => `৳ ${row.original.course.price}`,
+      cell: ({ row }) => `Tk.${row.original.course.price}`,
     },
     {
       accessorKey: "number",
@@ -55,11 +58,16 @@ const LeadNumber = () => {
       header: "Date",
       cell: ({ row }) => {
         const date = new Date(row.original.createdAt);
-        return date.toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
+        const res = date.toLocaleString("en-US", {
           year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
         });
+
+        return <div className="w-24">{res}</div>;
       },
     },
     {

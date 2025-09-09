@@ -27,7 +27,7 @@ const NumberStatusCell = ({ order, refetch }: OrderStatusCellProps) => {
     <select
       value={order?.call_status || "Not Called Yet"}
       onChange={(e) => handleChange(e.target.value)}
-      className="w-full p-1 border rounded text-sm"
+      className=" p-1 border rounded text-sm w-20"
     >
       <option value="Not Called Yet" disabled>
         Not Called Yet

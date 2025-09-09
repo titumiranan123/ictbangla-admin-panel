@@ -38,7 +38,7 @@ const NumberNoteCell = ({ order, refetch }: OrderNoteCellProps) => {
       onChange={(e) => setNote(e.target.value)}
       onBlur={handleBlur}
       placeholder="Add note"
-      className="w-full p-1 border rounded text-sm min-h-[40px]"
+      className="w-full p-1 border rounded text-sm min-h-[40px] min-w-30"
       rows={2}
       disabled={loading}
     />
