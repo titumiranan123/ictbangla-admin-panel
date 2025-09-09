@@ -1,7 +1,7 @@
 "use client";
 
 import { useLeadNumber } from "@/hooks/useNumberLead";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
 import { NumberAgent } from "./Nuberagent";
@@ -23,9 +23,17 @@ const LeadNumber = () => {
   };
 
   const { data, isLoading, refetch } = useLeadNumber(filter);
-  console.log(data);
   if (isLoading) return <p className="text-center py-6">Loading...</p>;
-
+  // Extract unique courses for filter dropdown
+  // const uniqueCourses = useMemo(() => {
+  //   const courseMap = new Map();
+  //   data.response?.forEach((order: any) => {
+  //     if (order?.course) {
+  //       courseMap?.set(order?.course?._id, order?.course);
+  //     }
+  //   });
+  //   return Array.from(courseMap.values());
+  // }, [data.response]);
   const columns: ColumnDef<any>[] = [
     {
       accessorKey: "_id",
@@ -103,6 +111,24 @@ const LeadNumber = () => {
   return (
     <div className="md:p-4 p-1">
       <h2 className="text-xl font-semibold mb-4">Lead Numbers</h2>
+      {/* <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Course
+        </label>
+        <select
+          name="courseId"
+          value={filters.courseId}
+          onChange={onFilterChange}
+          className="w-full p-2 border rounded"
+        >
+          <option value="">All Courses</option>
+          {uniqueCourses.map((course) => (
+            <option key={course._id} value={course._id}>
+              {course.basicInfo.title}
+            </option>
+          ))}
+        </select>
+      </div> */}
       <DataTable data={data.response} columns={columns} />
       <Pagination>
         <PaginationContent>
