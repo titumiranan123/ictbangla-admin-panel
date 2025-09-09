@@ -6,6 +6,7 @@ import {
 import { Visibility as ViewIcon } from "@mui/icons-material";
 import { useUpdateOrderCallStatus } from "../useUpdateOrderCallStatus";
 import useOrderColumns from "../OrderColumns";
+import Link from "next/link";
 
 interface Props {
   filters: any;
@@ -63,12 +64,21 @@ const OrdersTableContent = ({
     positionActionsColumn: "last",
     renderRowActions: ({ row }) => (
       <div className="flex gap-1">
-        <button
-          onClick={() => setSelectedOrder(row.original)}
-          className="p-1 text-blue-500 hover:text-blue-700"
+        <Link
+          target="_blank"
+          href={`https://ictbangla.com/checkout/payment?orderId=${row?.original?.order_uuid}`}
+          className="p-1 bg-red-500 hover:bg-red-700 rounded-lg text-white px-3 flex justify-center items-center"
           title="View"
         >
-          <ViewIcon fontSize="small" />
+          pay
+        </Link>
+
+        <button
+          onClick={() => setSelectedOrder(row.original)}
+          className="p-1 text-blue-500 hidden hover:text-blue-700"
+          title="View"
+        >
+          pay
         </button>
       </div>
     ),

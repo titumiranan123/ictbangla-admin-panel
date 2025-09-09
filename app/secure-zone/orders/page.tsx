@@ -38,7 +38,6 @@ const OrdersTable = () => {
 
   // Debounced search
   useEffect(() => {
-    console.log("searchInput", searchInput);
     const timer = setTimeout(() => {
       setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }));
     }, 300);
