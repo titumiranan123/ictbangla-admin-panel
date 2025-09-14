@@ -1,26 +1,36 @@
-'use client'
-import { Order } from "./types";
-
+"use client";
+import { api_url } from "@/hooks/apiurl";
 
 interface OrderStatusCellProps {
   order: any;
-  onUpdate: (orderId: string, field: keyof Order, value: any) => void;
+  refetch: () => void;
 }
 
-const OrderStatusCell = ({ order, onUpdate }: OrderStatusCellProps) => {
+const OrderStatusCell = ({ order, refetch }: OrderStatusCellProps) => {
+  const onUpdate = async (value: any) => {
+    const response = await api_url.patch(
+      `/v1/admin-user/add-agenda-on-purchase/${order._id}`,
+      {
+        call_status: value,
+      }
+    );
+    if (response.status === 201 || response.status === 200) {
+      refetch();
+      console.log("response", response);
+    }
+  };
   return (
     <select
       value={order?.agenda?.call_status || "Not Called Yet"}
-      onChange={(e) =>
-        onUpdate(order, "call_status", e.target.value )
-      }
-      className="w-full p-1 border rounded text-sm"
+      onChange={(e) => onUpdate(e.target.value)}
+      className="w-[120px] p-1 border rounded text-sm"
     >
-      <option value="Not Called Yet">Not Called Yet</option>
+      <option value="Not Called Yet" title="Not Called Yet">
+        Not Called Yet
+      </option>
       <option value="Ok">Ok</option>
       <option value="Off">Off</option>
       <option value="N/r">N/r</option>
-    
     </select>
   );
 };

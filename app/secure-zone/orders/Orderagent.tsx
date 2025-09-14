@@ -30,8 +30,8 @@ export const OrderAgentCell = ({ order, onUpdate }: OrderAgentCellProps) => {
   return (
     <select
       value={order.agenda?.call_agent?._id || ""}
-      onChange={(e) => onUpdate(order , "call_agent", e.target.value)}
-      className="w-full p-1 border rounded text-sm"
+      onChange={(e) => onUpdate(order, "call_agent", e.target.value)}
+      className="w-[140px] p-1 border rounded text-sm"
     >
       <option value="" disabled>
         Select Agent

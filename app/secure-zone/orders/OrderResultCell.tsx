@@ -17,7 +17,7 @@ const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
       : undefined;
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex  items-center">
       <button
         disabled={currentResult === "true"}
         onClick={() => onUpdate(order, "result", "true")}
@@ -53,7 +53,7 @@ const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
         <CancelOutlined fontSize="small" />
       </button>
 
-      {currentResult !== undefined && (
+      {/* {currentResult !== undefined && (
         <span className="text-xs ml-1">
           {currentResult === "true"
             ? "Success"
@@ -61,7 +61,7 @@ const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
             ? "Pending"
             : "Failed"}
         </span>
-      )}
+      )} */}
     </div>
   );
 };

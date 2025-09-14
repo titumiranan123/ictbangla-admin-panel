@@ -1,35 +1,36 @@
 "use client";
 import { api_url } from "@/hooks/apiurl";
-import { useState } from "react";
 
 interface OrderNoteCellProps {
   order: any;
-  onUpdate: (orderId: string, field: any, value: any) => void;
+  refetch: () => void;
 }
 
-const OrderNoteCell = ({ order }: OrderNoteCellProps) => {
-  const [note, setNote] = useState(order?.agenda?.note || "");
-
-  const handleBlur = async () => {
-    if (note !== order?.agenda?.note) {
-      console.log("order update", order);
+const OrderNoteCell = ({ order, refetch }: OrderNoteCellProps) => {
+  const handleBlur = async (value: string) => {
+    try {
       const response = await api_url.patch(
         `/v1/admin-user/add-agenda-on-purchase/${order._id}`,
-        {
-          note: note,
-        }
+        { note: value }
       );
-      console.log("note", response);
+
+      if (response.status === 200 || response.status === 201) {
+        refetch();
+      }
+    } catch (error) {
+      console.error("Failed to update note:", error);
     }
   };
 
   return (
     <textarea
-      value={note}
-      onChange={(e) => setNote(e.target.value)}
-      onBlur={handleBlur}
+      defaultValue={order?.agenda?.note ?? ""}
+      onBlur={(e) => {
+        console.log(e);
+        handleBlur(e.target.value);
+      }}
       placeholder="Add note"
-      className="w-full p-1 border rounded text-sm min-h-[40px]"
+      className="w-[200px] p-1 border rounded text-sm min-h-[40px]"
       rows={2}
     />
   );

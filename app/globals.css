@@ -23,6 +23,12 @@
     @apply lg:mt-30 mt-20;
   }
 }
+.scrolbarHidden::-webkit-scrollbar {
+  width: 1px !important;
+  height: 10px !important;
+  direction: rtl
+  /* Chrome, Safari, Edge */
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

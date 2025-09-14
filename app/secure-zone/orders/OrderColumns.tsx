@@ -106,7 +106,7 @@ const useOrderColumns = (
         header: "Call Status",
         size: 150,
         Cell: ({ row }) => (
-          <OrderStatusCell order={row.original} onUpdate={handleInlineUpdate} />
+          <OrderStatusCell order={row.original} refetch={() => {}} />
         ),
       },
       {
@@ -114,7 +114,7 @@ const useOrderColumns = (
         header: "Note",
         size: 200,
         Cell: ({ row }) => (
-          <OrderNoteCell order={row.original} onUpdate={handleInlineUpdate} />
+          <OrderNoteCell order={row.original} refetch={() => {}} />
         ),
       },
       {

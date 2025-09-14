@@ -1,20 +1,14 @@
 "use client";
 
 import { useLeadNumber } from "@/hooks/useNumberLead";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
 import { NumberAgent } from "./Nuberagent";
 import NumberNoteCell from "./NumberNoteCell";
 import NumberStatusCell from "./NumberStatusCell";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationPrevious,
-  PaginationNext,
-} from "@/components/ui/pagination";
+
+import { CustomPagination } from "@/utils/CustomPagination";
 const LeadNumber = () => {
   const [page, setPage] = useState(1);
 
@@ -130,47 +124,11 @@ const LeadNumber = () => {
         </select>
       </div> */}
       <DataTable data={data.response} columns={columns} />
-      <Pagination>
-        <PaginationContent>
-          {/* Previous Button */}
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                if (page > 1) setPage(page - 1);
-              }}
-            />
-          </PaginationItem>
-
-          {/* Page Numbers */}
-          {Array.from({ length: data?.totalPages }).map((_, i) => (
-            <PaginationItem key={i}>
-              <PaginationLink
-                href="#"
-                isActive={page === i + 1}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPage(i + 1);
-                }}
-              >
-                {i + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-
-          {/* Next Button */}
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                if (page < data?.totalPages) setPage(page + 1);
-              }}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <CustomPagination
+        page={page}
+        setPage={setPage}
+        totalPage={data?.totalPages}
+      />
     </div>
   );
 };

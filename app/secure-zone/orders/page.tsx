@@ -6,11 +6,13 @@ import { Order, Filters } from "./types";
 import ViewOrderModal from "./ViewOrderModal";
 import EditOrderModal from "./EditOrderModal";
 import OrdersFilterPanel from "./(mjorcomp)/OrdersFilterPanel";
-import OrdersTableContent from "./(mjorcomp)/OrdersTableContent";
+import OrderTable from "./(mjorcomp)/OrderTable";
+import { CustomPagination } from "@/utils/CustomPagination";
 
 const OrdersTable = () => {
+  const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<Filters>({
-    page: 1,
+    page: page,
     perPage: 10,
     orderBy: "FROM_NEW",
     paymentStatus: "",
@@ -22,9 +24,7 @@ const OrdersTable = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [editFormData, setEditFormData] = useState<boolean>(false);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
-
   const { data: orders, isLoading, refetch } = useAllOrders(filters);
-
   // Extract unique courses for filter dropdown
   const uniqueCourses = useMemo(() => {
     const courseMap = new Map<string, Order["course"]>();
@@ -73,14 +73,27 @@ const OrdersTable = () => {
         resetFilters={resetFilters}
         setEditFormData={setEditFormData}
       />
-      <OrdersTableContent
+      {/* <OrdersTableContent
         filters={filters}
         setFilters={setFilters}
         orders={orders}
         isLoading={isLoading}
         refetch={refetch}
         setSelectedOrder={setSelectedOrder}
+      /> */}
+      <div className="h-[600px] overflow-scroll scrolbarHidden">
+        <OrderTable
+          data={orders?.data}
+          refetch={refetch}
+          isLoading={isLoading}
+        />
+      </div>
+      <CustomPagination
+        page={page}
+        setPage={setPage}
+        totalPage={Math.ceil(orders?.total / 10)}
       />
+
       {/* Modals */}
       {selectedOrder && (
         <ViewOrderModal

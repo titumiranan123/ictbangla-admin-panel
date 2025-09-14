@@ -34,7 +34,12 @@ const NumberStatusCell = ({ order, refetch }: OrderStatusCellProps) => {
       </option>
       <option value="Ok">Ok</option>
       <option value="OFF">Off</option>
-      <option value="REJECT">Reject</option>
+      <option title="Reject" value="REJECT">
+        Reject
+      </option>
+      <option title="No Response" value="NO_RESPONSE">
+        No Response
+      </option>
     </select>
   );
 };
