@@ -20,6 +20,13 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { SkeletonRow } from "./SkeletonRow";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 const OrderTable = ({
   data = [],
@@ -143,7 +150,7 @@ const OrderTable = ({
       header: "Call Agent",
       size: 150,
       cell: ({ row }) => (
-        <OrderAgentCell order={row.original} onUpdate={() => {}} />
+        <OrderAgentCell order={row.original} refetch={refetch} />
       ),
     },
     {
@@ -151,7 +158,7 @@ const OrderTable = ({
       header: "Result",
       size: 100,
       cell: ({ row }) => (
-        <OrderResultCell order={row.original} onUpdate={() => {}} />
+        <OrderResultCell order={row.original} refetch={refetch} />
       ),
     },
     {
@@ -183,6 +190,24 @@ const OrderTable = ({
 
   return (
     <div>
+      {/* Column Toggle */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">Toggle Columns</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          {table.getAllLeafColumns().map((column) => (
+            <DropdownMenuCheckboxItem
+              key={column.id}
+              checked={column.getIsVisible()}
+              onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              className="capitalize"
+            >
+              {column.id}
+            </DropdownMenuCheckboxItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
       <div className="table overflow-x-auto h-[400px]">
         <Table className="mt-4">
           <TableHeader>

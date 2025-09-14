@@ -1,5 +1,6 @@
 "use client";
 
+import { api_url } from "@/hooks/apiurl";
 import { useAllAgent } from "@/hooks/useAllAgent";
 
 interface Agent {
@@ -19,18 +20,30 @@ interface Order {
 
 interface OrderAgentCellProps {
   order: Order;
-  onUpdate: (orderId: any, field: keyof any, value: any) => void;
+  refetch: () => void;
 }
 
-export const OrderAgentCell = ({ order, onUpdate }: OrderAgentCellProps) => {
+export const OrderAgentCell = ({ order, refetch }: OrderAgentCellProps) => {
   const { data: agents = [], isLoading } = useAllAgent();
 
   if (isLoading) return <div>Loading...</div>;
-
+  const onUpdate = async (value: string) => {
+    try {
+      const response = await api_url.patch(
+        `/v1/admin-user/add-agenda-on-purchase/${order._id}`,
+        { call_agent: value }
+      );
+      if (response.status === 200 || response.status === 201) {
+        refetch();
+      }
+    } catch (error) {
+      console.error("Failed to update note:", error);
+    }
+  };
   return (
     <select
       value={order.agenda?.call_agent?._id || ""}
-      onChange={(e) => onUpdate(order, "call_agent", e.target.value)}
+      onChange={(e) => onUpdate(e.target.value)}
       className="w-[140px] p-1 border rounded text-sm"
     >
       <option value="" disabled>

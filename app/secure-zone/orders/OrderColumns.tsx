@@ -122,7 +122,7 @@ const useOrderColumns = (
         header: "Call Agent",
         size: 150,
         Cell: ({ row }) => (
-          <OrderAgentCell order={row.original} onUpdate={handleInlineUpdate} />
+          <OrderAgentCell order={row.original} refetch={() => {}} />
         ),
       },
       {
@@ -130,7 +130,7 @@ const useOrderColumns = (
         header: "Result",
         size: 100,
         Cell: ({ row }) => (
-          <OrderResultCell order={row.original} onUpdate={handleInlineUpdate} />
+          <OrderResultCell order={row.original} refetch={() => {}} />
         ),
       },
     ],

@@ -11,11 +11,14 @@ const authOptions: NextAuthOptions = {
         let user = null;
         if (credentials?.OTP) {
           const { email, otp } = credentials;
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/verify-otp`, {
-            method: "POST",
-            body: JSON.stringify({ email, otp }),
-            headers: { "Content-Type": "application/json" },
-          });
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/verify-otp`,
+            {
+              method: "POST",
+              body: JSON.stringify({ email_or_phone: email, otp }),
+              headers: { "Content-Type": "application/json" },
+            }
+          );
           const data = await res.json();
           if (res.ok && data) {
             user = data;
@@ -24,11 +27,14 @@ const authOptions: NextAuthOptions = {
           return null;
         } else if (credentials?.Login) {
           const { email, password }: any = credentials;
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/signin-user`, {
-            method: "POST",
-            body: JSON.stringify({ email, password }),
-            headers: { "Content-Type": "application/json" },
-          });
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/v1/auth/signin-user`,
+            {
+              method: "POST",
+              body: JSON.stringify({ email_or_phone: email, password }),
+              headers: { "Content-Type": "application/json" },
+            }
+          );
 
           const response = await res.json();
           if (res.ok && response) {

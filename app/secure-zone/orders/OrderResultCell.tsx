@@ -1,4 +1,5 @@
 "use client";
+import { api_url } from "@/hooks/apiurl";
 import {
   CheckCircleOutline,
   PendingOutlined,
@@ -7,20 +8,40 @@ import {
 
 interface OrderResultCellProps {
   order: any;
-  onUpdate: (orderId: string, field: keyof any, value: any) => void;
+  refetch: () => void;
 }
 
-const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
+const OrderResultCell = ({ order, refetch }: OrderResultCellProps) => {
   const currentResult =
     order?.agenda?.result && typeof order.agenda.result === "string"
       ? order.agenda.result.toLowerCase()
       : undefined;
 
+  const onUpdate = async (value: string) => {
+    try {
+      const response = await api_url.patch(
+        `/v1/admin-user/add-agenda-on-purchase/${order._id}`,
+        { result: value }
+      );
+      if (response.status === 200 || response.status === 201) {
+        if (value === "true" || value === "false" || value === "PENDING") {
+          await api_url.post(
+            `/v1/admin-user/manual-admin-payment/${
+              order?.paymentId?._id
+            }?paymentStatus=${value === "true" ? "PAID" : "UNPAID"}`
+          );
+        }
+        refetch();
+      }
+    } catch (error) {
+      console.error("Failed to update note:", error);
+    }
+  };
   return (
     <div className="flex  items-center">
       <button
         disabled={currentResult === "true"}
-        onClick={() => onUpdate(order, "result", "true")}
+        onClick={() => onUpdate("true")}
         className={`p-1  rounded ${
           currentResult === "true"
             ? "text-green-500"
@@ -31,7 +52,7 @@ const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
         <CheckCircleOutline fontSize="small" />
       </button>
       <button
-        onClick={() => onUpdate(order, "result", "PENDING")}
+        onClick={() => onUpdate("PENDING")}
         className={`p-1 rounded ${
           currentResult === "pending"
             ? "text-amber-500"
@@ -42,7 +63,7 @@ const OrderResultCell = ({ order, onUpdate }: OrderResultCellProps) => {
         <PendingOutlined fontSize="small" />
       </button>
       <button
-        onClick={() => onUpdate(order, "result", "false")}
+        onClick={() => onUpdate("false")}
         className={`p-1 rounded ${
           currentResult === "false"
             ? "text-red-500"

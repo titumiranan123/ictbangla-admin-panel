@@ -25,6 +25,7 @@ const OrdersTable = () => {
   const [editFormData, setEditFormData] = useState<boolean>(false);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const { data: orders, isLoading, refetch } = useAllOrders(filters);
+
   // Extract unique courses for filter dropdown
   const uniqueCourses = useMemo(() => {
     const courseMap = new Map<string, Order["course"]>();
@@ -36,10 +37,16 @@ const OrdersTable = () => {
     return Array.from(courseMap.values());
   }, [orders?.data]);
 
+  // Update filters when page changes
+  useEffect(() => {
+    setFilters((prev) => ({ ...prev, page }));
+  }, [page]);
+
   // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
       setFilters((prev) => ({ ...prev, search: searchInput, page: 1 }));
+      setPage(1); // Reset to first page when searching
     }, 300);
     return () => clearTimeout(timer);
   }, [searchInput]);
@@ -56,11 +63,13 @@ const OrdersTable = () => {
       courseId: "",
     });
     setSearchInput("");
+    setPage(1); // Reset page to 1 when resetting filters
   };
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Order Management</h1>
+
       {/* Filter Section */}
       <OrdersFilterPanel
         filters={filters}
@@ -73,25 +82,22 @@ const OrdersTable = () => {
         resetFilters={resetFilters}
         setEditFormData={setEditFormData}
       />
-      {/* <OrdersTableContent
-        filters={filters}
-        setFilters={setFilters}
-        orders={orders}
-        isLoading={isLoading}
-        refetch={refetch}
-        setSelectedOrder={setSelectedOrder}
-      /> */}
-      <div className="h-[600px] overflow-scroll scrolbarHidden">
+
+      {/* Order Table */}
+      <div className="h-[500px] overflow-scroll scrolbarHidden">
         <OrderTable
           data={orders?.data}
           refetch={refetch}
           isLoading={isLoading}
+          // Pass this prop to handle row clicks
         />
       </div>
+
+      {/* Pagination */}
       <CustomPagination
         page={page}
         setPage={setPage}
-        totalPage={Math.ceil(orders?.total / 10)}
+        totalPage={Math.ceil(orders?.total / filters.perPage)}
       />
 
       {/* Modals */}
