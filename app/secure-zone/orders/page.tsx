@@ -67,7 +67,7 @@ const OrdersTable = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container h-screen flex flex-col mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Order Management</h1>
 
       {/* Filter Section */}
@@ -84,7 +84,7 @@ const OrdersTable = () => {
       />
 
       {/* Order Table */}
-      <div className="h-[500px] overflow-scroll scrolbarHidden">
+      <div className="flex-1 overflow-scroll scrolbarHidden">
         <OrderTable
           data={orders?.data}
           refetch={refetch}

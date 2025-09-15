@@ -74,17 +74,17 @@ const UserFilter: React.FC<props> = ({ setSelectedUser, selectedUser }) => {
     setSelectedUser(event.target.value);
   };
 
-  const roleOptions = [
-    { value: "", label: "All Roles" },
-    { value: "ADMIN", label: "Admin" },
-    { value: "USER", label: "User" },
-  ];
+  // const roleOptions = [
+  //   { value: "", label: "All Roles" },
+  //   { value: "ADMIN", label: "Admin" },
+  //   { value: "USER", label: "User" },
+  // ];
 
   return (
     <div>
       {/* Filters */}
-      <Box className="mb-6 mt-10 flex flex-col md:flex-row items-start md:items-center gap-4">
-        <TextField
+      <Box className="mb-6 mt-5 flex flex-col md:flex-row items-start md:items-center gap-4">
+        {/* <TextField
           select
           label="Filter by Role"
           value={filters.userRole}
@@ -97,7 +97,7 @@ const UserFilter: React.FC<props> = ({ setSelectedUser, selectedUser }) => {
               {option?.label}
             </MenuItem>
           ))}
-        </TextField>
+        </TextField> */}
 
         <TextField
           label="Search Users"

@@ -32,7 +32,7 @@ export function CustomPagination({
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       if (page <= 4) {
-        pages.push(1, 2, 3, 4, 5, "ellipsis", totalPages);
+        pages.push(1, 2, 3, "ellipsis", totalPages);
       } else if (page >= totalPages - 3) {
         pages.push(
           1,
