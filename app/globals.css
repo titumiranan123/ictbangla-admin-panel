@@ -25,7 +25,7 @@
 }
 .scrolbarHidden::-webkit-scrollbar {
   width: 1px !important;
-  height: 10px !important;
+  height: 16px !important;
   direction: rtl
   /* Chrome, Safari, Edge */
 }

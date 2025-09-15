@@ -189,28 +189,30 @@ const OrderTable = ({
   });
 
   return (
-    <div>
+    <div className="h-full relative">
       {/* Column Toggle */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">Toggle Columns</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          {table.getAllLeafColumns().map((column) => (
-            <DropdownMenuCheckboxItem
-              key={column.id}
-              checked={column.getIsVisible()}
-              onCheckedChange={(value) => column.toggleVisibility(!!value)}
-              className="capitalize"
-            >
-              {column.id}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <div className="table overflow-x-auto h-[400px]">
-        <Table className="mt-4">
-          <TableHeader>
+      <div className="sticky top-0 h-[45px] shadow bg-white z-30">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">Toggle Columns</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            {table.getAllLeafColumns().map((column) => (
+              <DropdownMenuCheckboxItem
+                key={column.id}
+                checked={column.getIsVisible()}
+                onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                className="capitalize"
+              >
+                {column.id}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div className="table relative overflow-x-auto overflow-y-auto">
+        <Table className="mt-4  h-full">
+          <TableHeader className="sticky top-0 bg-white z-10">
             {table.getHeaderGroups().map((headerGrop) => (
               <TableRow key={headerGrop.id}>
                 {headerGrop.headers.map((header) => (
