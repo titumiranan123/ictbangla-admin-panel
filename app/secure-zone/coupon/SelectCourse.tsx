@@ -20,9 +20,11 @@ import React, { useState } from "react";
 const SelectCourse = ({
   formData,
   setFormData,
+  isMultiple,
 }: {
   setFormData: (prev: any) => void;
   formData: any;
+  isMultiple: boolean;
 }) => {
   const [filters, setFilters] = useState({
     page: 1,
@@ -44,14 +46,14 @@ const SelectCourse = ({
     handleChange("courses", updatedCourses);
   };
 
-  // const addNewCourse = () => {
-  //   handleChange("courses", [
-  //     ...(formData.courses || []),
-  //     {
-  //       courseId: "",
-  //     },
-  //   ]);
-  // };
+  const addNewCourse = () => {
+    handleChange("courses", [
+      ...(formData.courses || []),
+      {
+        courseId: "",
+      },
+    ]);
+  };
   const removeCourse = (index: number) => {
     const updatedCourses = [...(formData.courses || [])];
     updatedCourses.splice(index, 1);
@@ -189,14 +191,16 @@ const SelectCourse = ({
             </Box>
           ))}
 
-          {/* <Button
-            variant="outlined"
-            onClick={addNewCourse}
-            fullWidth
-            sx={{ mt: 1 }}
-          >
-            Add Another Course
-          </Button> */}
+          {isMultiple && (
+            <Button
+              variant="outlined"
+              onClick={addNewCourse}
+              fullWidth
+              sx={{ mt: 1 }}
+            >
+              Add Another Course
+            </Button>
+          )}
         </Paper>
       </div>
     </div>

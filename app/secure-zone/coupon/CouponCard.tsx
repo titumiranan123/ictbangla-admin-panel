@@ -1,5 +1,6 @@
 // components/CouponCard.tsx
-
+"use client";
+import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -72,6 +73,12 @@ const CouponCard = ({
         </div>
 
         <div className="mt-4 flex space-x-3">
+          <Link
+            href={`/secure-zone/coupon/${coupon?._id}`}
+            className="text-sm  text-blue-600 hover:text-blue-800 font-medium"
+          >
+            View
+          </Link>
           <button
             onClick={() => onEdit()}
             className="text-sm hidden text-blue-600 hover:text-blue-800 font-medium"

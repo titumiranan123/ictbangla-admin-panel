@@ -30,7 +30,7 @@ interface User {
   email?: string;
 }
 interface props {
-  setSelectedUser: (p: string) => void;
+  setSelectedUser: (p: any) => void;
   selectedUser: string;
 }
 
@@ -71,7 +71,7 @@ const UserFilter: React.FC<props> = ({ setSelectedUser, selectedUser }) => {
   };
 
   const handleUserSelect = (event: SelectChangeEvent<string>) => {
-    setSelectedUser(event.target.value);
+    setSelectedUser(JSON.parse(event.target.value));
   };
 
   // const roleOptions = [
@@ -141,7 +141,7 @@ const UserFilter: React.FC<props> = ({ setSelectedUser, selectedUser }) => {
               displayEmpty
             >
               {data?.users.map((user: User) => (
-                <MenuItem key={user._id} value={user._id}>
+                <MenuItem key={user._id} value={JSON.stringify(user)}>
                   {user.first_name} {user.last_name}
                 </MenuItem>
               ))}

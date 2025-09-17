@@ -7,15 +7,17 @@ import { useCouponList } from "../../../hooks/useCouponList";
 import Swal from "sweetalert2";
 import { api_url } from "@/hooks/apiurl";
 import toast from "react-hot-toast";
+type CouponType = "SINGLE" | "MULTIPLE" | "GLOBAL" | "SPECIFIC_USER";
 
 interface Coupon {
   title: string;
-  is_global: boolean;
+  coupon_type: CouponType;
   start_time: string;
   end_time: string;
   reduce_percent: number;
   coupon_code: string;
-  course_id?: string;
+  course_ids?: string[];
+  user_id?: string;
 }
 
 const CouponList = () => {

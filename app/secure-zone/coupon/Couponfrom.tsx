@@ -1,19 +1,22 @@
 "use client";
-// components/CouponForm.tsx
 import { useForm, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import SelectCourse from "./SelectCourse";
 import { useState } from "react";
+import UserFilter from "../orders/UserFilter";
+
+type CouponType = "SINGLE" | "MULTIPLE" | "GLOBAL" | "SPECIFIC_USER";
 
 interface Coupon {
   title: string;
-  is_global: boolean;
+  coupon_type: CouponType;
   start_time: string;
   end_time: string;
   reduce_percent: number;
   coupon_code: string;
-  course_id?: string;
+  course_ids?: string[];
+  user_id?: string;
 }
 
 interface CouponFormProps {
@@ -21,42 +24,60 @@ interface CouponFormProps {
   initialData?: Coupon;
   isEditing?: boolean;
 }
+
 const CouponForm = ({
   onSubmit,
   initialData,
   isEditing = false,
 }: CouponFormProps) => {
-  const [formData, setFormData] = useState<any>({
-    courses: [
-      {
-        courseId: "",
-      },
-    ],
-  });
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [formData, setFormData] = useState<{ courses: { courseId: string }[] }>(
+    {
+      courses: [{ courseId: "" }],
+    }
+  );
+  console.log(formData);
   const {
     register,
     handleSubmit,
     control,
     watch,
     formState: { errors },
-    setValue,
   } = useForm<Coupon>({
     defaultValues: initialData || {
       title: "",
-      is_global: false,
+      coupon_type: "SINGLE",
       start_time: new Date().toISOString(),
       end_time: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
       reduce_percent: 0,
       coupon_code: "",
-      course_id: "",
+      course_ids: formData?.courses
+        .filter((p) => p?.courseId)
+        .map((p) => p?.courseId),
+      user_id: "",
     },
   });
 
-  const isGlobal = watch("is_global");
+  const couponType = watch("coupon_type");
 
   const onSubmitHandler = (data: Coupon) => {
-    const coupondata = { ...data, course_id: formData?.courses[0]?.courseId };
-    onSubmit(coupondata);
+    let couponData: Coupon = { ...data };
+
+    if (couponType !== "GLOBAL") {
+      couponData.course_ids = formData?.courses
+        .filter((p) => p?.courseId)
+        .map((p) => p?.courseId) || [""];
+    } else {
+      delete couponData.course_ids;
+    }
+
+    if (couponType === "SPECIFIC_USER") {
+      couponData.user_id = selectedUser._id;
+    } else {
+      delete couponData.user_id;
+    }
+
+    onSubmit(couponData);
   };
 
   return (
@@ -78,7 +99,7 @@ const CouponForm = ({
             id="title"
             type="text"
             {...register("title", { required: "Title is required" })}
-            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
               errors.title ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Summer Sale 2025"
@@ -102,7 +123,7 @@ const CouponForm = ({
             {...register("coupon_code", {
               required: "Coupon code is required",
             })}
-            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
               errors.coupon_code ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="SUMMER25"
@@ -133,7 +154,7 @@ const CouponForm = ({
                 min: { value: 1, message: "Discount must be at least 1%" },
                 max: { value: 100, message: "Discount cannot exceed 100%" },
               })}
-              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
                 errors.reduce_percent ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="20"
@@ -147,25 +168,63 @@ const CouponForm = ({
           )}
         </div>
 
-        {/* Global Coupon Toggle */}
-        <div className="flex items-center">
-          <input
-            id="is_global"
-            type="checkbox"
-            {...register("is_global")}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
+        {/* Coupon Type */}
+        <div>
           <label
-            htmlFor="is_global"
-            className="ml-2 block text-sm text-gray-700"
+            htmlFor="coupon_type"
+            className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Apply to all courses (Global Coupon)
+            Coupon Type *
           </label>
+          <select
+            id="coupon_type"
+            {...register("coupon_type", {
+              required: "Coupon type is required",
+            })}
+            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+              errors.coupon_type ? "border-red-500" : "border-gray-300"
+            }`}
+          >
+            <option value="SINGLE">Single Course</option>
+            <option value="MULTIPLE">Multiple Courses</option>
+            <option value="GLOBAL">Global (All Courses)</option>
+            <option value="SPECIFIC_USER">Specific User</option>
+          </select>
+          {errors.coupon_type && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.coupon_type.message}
+            </p>
+          )}
         </div>
 
-        {/* Course ID (conditionally shown) */}
-        {!isGlobal && (
-          <SelectCourse formData={formData} setFormData={setFormData} />
+        {/* Course IDs (conditionally shown) */}
+        {couponType !== "GLOBAL" && (
+          <SelectCourse
+            formData={formData}
+            setFormData={setFormData}
+            isMultiple={couponType === "MULTIPLE"}
+          />
+        )}
+
+        {/* User ID (conditionally shown) */}
+        {couponType === "SPECIFIC_USER" && (
+          <div>
+            <label
+              htmlFor="user_id"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              User ID *
+            </label>
+            <UserFilter
+              selectedUser={selectedUser}
+              setSelectedUser={setSelectedUser}
+            />
+            {errors.user_id && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.user_id.message}
+              </p>
+            )}
+          </div>
         )}
 
         {/* Date Range */}
@@ -186,7 +245,7 @@ const CouponForm = ({
                   startDate={new Date(watch("start_time"))}
                   endDate={new Date(watch("end_time"))}
                   minDate={new Date()}
-                  className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
                     errors.start_time ? "border-red-500" : "border-gray-300"
                   }`}
                   dateFormat="MMMM d, yyyy h:mm aa"
@@ -224,7 +283,7 @@ const CouponForm = ({
                   startDate={new Date(watch("start_time"))}
                   endDate={new Date(watch("end_time"))}
                   minDate={new Date(watch("start_time"))}
-                  className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
                     errors.end_time ? "border-red-500" : "border-gray-300"
                   }`}
                   dateFormat="MMMM d, yyyy h:mm aa"
