@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import OrderAction from "./OrderAction";
 
 const OrderTable = ({
   data = [],
@@ -162,20 +163,15 @@ const OrderTable = ({
       ),
     },
     {
-      accessorKey: "Acction",
-      header: "Result",
+      accessorKey: "Action",
+      header: "Action",
       size: 100,
       cell: ({ row }) => (
-        <div className="flex gap-1">
-          <Link
-            target="_blank"
-            href={`https://ictbangla.com/checkout/payment?orderId=${row?.original?.order_uuid}`}
-            className="p-1 bg-red-400 hover:bg-red-700 rounded-lg text-white px-3 flex justify-center items-center"
-            title="View"
-          >
-            pay
-          </Link>
-        </div>
+        <OrderAction
+          data={row?.original}
+          key={row.original}
+          refetch={refetch}
+        />
       ),
     },
   ];
