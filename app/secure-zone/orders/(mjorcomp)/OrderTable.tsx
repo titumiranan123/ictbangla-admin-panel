@@ -88,9 +88,16 @@ const OrderTable = ({
     {
       accessorKey: "price",
       header: "Price",
-      cell: ({ cell }) => (
-        <div className="font-medium w-[90px] ">
-          Tk {cell.getValue<number>().toFixed(2)}
+      cell: ({ row }) => (
+        <div className="font-medium w-[140px] flex flex-col ">
+          <p>Tk. {row?.original?.paymentId?.price}</p>
+          <p
+            className="text-[12px]"
+            onClick={() => handleToCopyText(row?.original?.used_coupon?.code)}
+          >
+            {row?.original?.used_coupon?.code &&
+              `Coupon : ${row?.original?.used_coupon?.code}`}
+          </p>
         </div>
       ),
     },

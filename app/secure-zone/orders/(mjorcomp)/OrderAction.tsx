@@ -18,32 +18,44 @@ interface OrderActionProps {
 
 const OrderAction: React.FC<OrderActionProps> = ({ data, refetch }) => {
   const handleRefund = async () => {
-    const { value: reason } = await Swal.fire({
-      title: "Refund Reason",
-      input: "textarea",
-      inputLabel: "Please provide a reason for the refund",
-      inputPlaceholder: "Type your reason here...",
-      inputAttributes: {
-        "aria-label": "Type your reason here",
-      },
+    const { value: formValues } = await Swal.fire({
+      title: "Refund Request",
+      html: `
+        <input id="swal-input-sku" class="swal2-input" placeholder="Enter SKU name">
+        <textarea id="swal-input-reason" class="swal2-textarea" placeholder="Type your reason here..."></textarea>
+      `,
+      focusConfirm: false,
       showCancelButton: true,
       confirmButtonText: "Refund",
       cancelButtonText: "Cancel",
-      preConfirm: (reason) => {
-        if (!reason) {
-          Swal.showValidationMessage("You must provide a reason");
+      preConfirm: () => {
+        const sku = (
+          document.getElementById("swal-input-sku") as HTMLInputElement
+        )?.value;
+        const reason = (
+          document.getElementById("swal-input-reason") as HTMLTextAreaElement
+        )?.value;
+
+        if (!sku) {
+          Swal.showValidationMessage("SKU name is required");
+          return false;
         }
-        return reason;
+        if (!reason) {
+          Swal.showValidationMessage("Refund reason is required");
+          return false;
+        }
+
+        return { sku, reason };
       },
     });
 
-    if (reason) {
+    if (formValues.reason && formValues.sku) {
       try {
         const response = await api_url.post(
           `/v1/admin-user/refund-payment/${data?.paymentId?._id}`,
-          { reason }
+          { sku: formValues.sku, reason: formValues.reason }
         );
-        console.log(response);
+
         if (response.status === 200 || response.status === 201) {
           refetch();
           Swal.fire(
