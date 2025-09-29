@@ -15,6 +15,7 @@ interface ManualUserInfo {
   name: string;
   email: string;
   phone: string;
+  coupon_code?: string;
 }
 
 interface CourseSelection {
@@ -28,6 +29,7 @@ const EditOrderModal = ({ onClose, refetch }: EditOrderModalProps) => {
     name: "",
     email: "",
     phone: "",
+    coupon_code: "",
   });
   const [formData, setFormData] = useState<{ courses: CourseSelection[] }>({
     courses: [{ courseId: "" }],
@@ -92,6 +94,7 @@ const EditOrderModal = ({ onClose, refetch }: EditOrderModalProps) => {
         name:
           manualUserInfo.name ||
           `${selectedUser?.first_name || ""} ${selectedUser?.last_name || ""}`,
+        coupon_code: manualUserInfo.coupon_code ?? "",
       };
 
       const res = await api_url.post(
@@ -232,7 +235,7 @@ const EditOrderModal = ({ onClose, refetch }: EditOrderModalProps) => {
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Full Name
+                  Full Name *
                 </label>
                 <input
                   className="w-full rounded-md border px-3 py-2 text-sm"
@@ -251,7 +254,9 @@ const EditOrderModal = ({ onClose, refetch }: EditOrderModalProps) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
+                <label className="block text-sm font-medium mb-1">
+                  Email *
+                </label>
                 <input
                   className="w-full rounded-md border px-3 py-2 text-sm"
                   value={manualUserInfo.email || selectedUser?.email || ""}
@@ -264,9 +269,9 @@ const EditOrderModal = ({ onClose, refetch }: EditOrderModalProps) => {
                 />
               </div>
 
-              <div className="md:col-span-2">
+              <div className="">
                 <label className="block text-sm font-medium mb-1">
-                  Phone Number
+                  Phone Number *
                 </label>
                 <input
                   className="w-full rounded-md border px-3 py-2 text-sm"
@@ -279,6 +284,19 @@ const EditOrderModal = ({ onClose, refetch }: EditOrderModalProps) => {
                     handleManualUserInfoChange("phone", e.target.value)
                   }
                   placeholder="+8801XXXXXXXXX"
+                />
+              </div>
+              <div className="">
+                <label className="block text-sm font-medium mb-1">
+                  Coupon Code
+                </label>
+                <input
+                  className="w-full rounded-md border px-3 py-2 text-sm"
+                  defaultValue={selectedUser?.phones?.[0]?.coupon_code || ""}
+                  onChange={(e) =>
+                    handleManualUserInfoChange("coupon_code", e.target.value)
+                  }
+                  placeholder="ex. SummerOff"
                 />
               </div>
             </div>

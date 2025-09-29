@@ -15,12 +15,14 @@ interface PaginationDemoProps {
   totalPage: number;
   page: number;
   setPage: (p: number) => void;
+  isLoading?: boolean;
 }
 
 export function CustomPagination({
   totalPage,
   page,
   setPage,
+  isLoading,
 }: PaginationDemoProps) {
   const totalPages = totalPage || 1;
 
@@ -66,6 +68,11 @@ export function CustomPagination({
         <PaginationItem>
           <PaginationPrevious
             href="#"
+            className={`${
+              isLoading || page <= 1
+                ? "pointer-events-none opacity-50 cursor-not-allowed"
+                : ""
+            }`}
             onClick={(e) => {
               e.preventDefault();
               if (page > 1) setPage(page - 1);
@@ -74,30 +81,47 @@ export function CustomPagination({
         </PaginationItem>
 
         {/* Page Numbers with Ellipsis */}
-        {getPageNumbers().map((p, idx) =>
-          p === "ellipsis" ? (
-            <PaginationItem key={`ellipsis-${idx}`}>
-              <PaginationEllipsis />
-            </PaginationItem>
-          ) : (
-            <PaginationItem key={p}>
-              <PaginationLink
-                href="#"
-                isActive={page === p}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPage(Number(p));
-                }}
-              >
-                {p}
-              </PaginationLink>
-            </PaginationItem>
+        {!isLoading ? (
+          getPageNumbers().map((p, idx) =>
+            p === "ellipsis" ? (
+              <PaginationItem key={`ellipsis-${idx}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            ) : (
+              <PaginationItem key={p}>
+                <PaginationLink
+                  href="#"
+                  isActive={page === p}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setPage(Number(p));
+                  }}
+                >
+                  {p}
+                </PaginationLink>
+              </PaginationItem>
+            )
           )
+        ) : (
+          <div className="flex justify-center gap-2 mt-3">
+            {/* Skeleton loading placeholders */}
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-9 w-9 rounded-md bg-gray-200 animate-pulse"
+              />
+            ))}
+          </div>
         )}
 
         {/* Next Button */}
         <PaginationItem>
           <PaginationNext
+            className={`${
+              isLoading
+                ? "pointer-events-none opacity-50 cursor-not-allowed"
+                : ""
+            }`}
             href="#"
             onClick={(e) => {
               e.preventDefault();

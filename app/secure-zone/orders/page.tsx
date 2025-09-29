@@ -97,7 +97,8 @@ const OrdersTable = () => {
       <CustomPagination
         page={page}
         setPage={setPage}
-        totalPage={Math.ceil(orders?.total / filters.perPage)}
+        totalPage={Math.ceil(orders?.totalPages)}
+        isLoading={isLoading}
       />
 
       {/* Modals */}
