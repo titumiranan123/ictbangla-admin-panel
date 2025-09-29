@@ -1,27 +1,36 @@
 "use client";
 import React, { useEffect, useState } from "react";
+
+import { useAllUserList } from "@/hooks/useAllUserList";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { handleToCopyText } from "@/utils/handleCopy";
 import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
+  TableHeader,
   TableRow,
-  Paper,
-  Avatar,
-  Chip,
-  Typography,
-  TablePagination,
+} from "@/components/ui/table";
+import { SkeletonRow } from "../orders/(mjorcomp)/SkeletonRow";
+import Swal from "sweetalert2";
+import {
+  IconButton,
+  InputAdornment,
+  MenuItem,
   Skeleton,
   TextField,
-  MenuItem,
-  Box,
-  InputAdornment,
-  IconButton,
+  Typography,
 } from "@mui/material";
-import { useAllUserList } from "@/hooks/useAllUserList";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
+import { Box } from "lucide-react";
+import UserAction from "./UserAction";
 
 const UserTable = () => {
   const [filters, setFilters] = useState({
@@ -70,9 +79,119 @@ const UserTable = () => {
     { value: "ADMIN", label: "Admin" },
     { value: "USER", label: "User" },
   ];
-  // Skeleton loader rows
-  const skeletonRows = Array(filters.perPage).fill(0);
 
+  // delete function
+  const handleDelete = async (userId: string) => {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        // 👉 এখানে delete API call করো
+        // await api.delete(`/users/${userId}`)
+
+        refetch?.();
+
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "User has been deleted.",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: "Something went wrong.",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+    }
+  };
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "_id",
+      header: "User Id",
+      cell: ({ row }) => (
+        <div
+          className="relative font-medium cursor-pointer group max-w-[120px]"
+          onClick={() => handleToCopyText(row.original._id)}
+        >
+          {row.original?._id?.slice(10)}
+          <span className="absolute inset-0 hidden px-2 py-1 text-green-500 bg-gray-200 backdrop-blur-2xl text-[12px] w-16 h-10 rounded opacity-0 group-hover:block group-hover:opacity-100 transition-opacity">
+            Click to copy
+          </span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => (
+        <div className="max-w-[200px]">
+          <div className="font-medium">
+            {row.original.first_name} {row.original.last_name}
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: "Email ",
+      cell: ({ row }) => (
+        <div className="max-w-[200px]">
+          <div
+            onClick={() => handleToCopyText(row.original.email)}
+            className="text-sm text-gray-500 break-words"
+          >
+            {row.original.email}
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "phone",
+      header: "Phone ",
+      cell: ({ row }) => (
+        <div className="max-w-[200px]">
+          <div
+            onClick={() => handleToCopyText(row.original.phones?.[0]?.number)}
+            className="text-sm text-gray-500"
+          >
+            {row.original.phones?.[0]?.number
+              ? row.original.phones?.[0]?.number
+              : "N/A"}
+          </div>
+        </div>
+      ),
+    },
+
+    {
+      accessorKey: "Action",
+      header: "Action",
+      size: 100,
+      cell: ({ row }) => <UserAction data={row.original} refetch={refetch} />,
+    },
+  ];
+
+  const table = useReactTable({
+    data: data?.users,
+    columns,
+    // state: { columnVisibility },
+    // onColumnVisibilityChange: setColumnVisibility,
+    getCoreRowModel: getCoreRowModel(),
+  });
   return (
     <div className="p-4">
       <Typography variant="h5" className="mb-4 font-bold text-gray-800">
@@ -123,141 +242,42 @@ const UserTable = () => {
         />
       </Box>
 
-      <TableContainer component={Paper} className="shadow-md rounded-lg mt-10">
-        <Table className="min-w-full">
-          <TableHead className="bg-gray-100">
-            <TableRow>
-              <TableCell className="font-semibold">User</TableCell>
-              <TableCell className="font-semibold">Username</TableCell>
-              <TableCell className="font-semibold">Email</TableCell>
-              <TableCell className="font-semibold">Login Type</TableCell>
-              <TableCell className="font-semibold">Status</TableCell>
-              <TableCell className="font-semibold">Phone</TableCell>
+      <Table className="mt-4  h-full">
+        <TableHeader className="sticky top-0 bg-white z-10">
+          {table.getHeaderGroups().map((headerGrop) => (
+            <TableRow key={headerGrop.id}>
+              {headerGrop.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading
-              ? skeletonRows.map((_, index) => (
-                  <TableRow key={`skeleton-${index}`}>
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <Skeleton variant="circular" width={40} height={40} />
-                        <div className="flex-1">
-                          <Skeleton variant="text" width="80%" />
-                          <Skeleton variant="text" width="60%" />
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton variant="text" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton variant="text" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton variant="rectangular" width={80} height={24} />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Skeleton
-                          variant="rectangular"
-                          width={80}
-                          height={24}
-                        />
-                        <Skeleton
-                          variant="rectangular"
-                          width={80}
-                          height={24}
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton variant="text" width={100} />
-                    </TableCell>
-                  </TableRow>
-                ))
-              : data?.users?.map((user: any) => (
-                  <TableRow key={user._id} className="hover:bg-gray-50">
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        {user.profile_image ? (
-                          <Avatar
-                            src={user.profile_image}
-                            alt={`${user.first_name} ${user.last_name}`}
-                          />
-                        ) : (
-                          <Avatar>
-                            {user.first_name?.[0]}
-                            {user.last_name?.[0]}
-                          </Avatar>
-                        )}
-                        <div>
-                          <p className="font-medium">
-                            {user.first_name} {user.last_name}
-                          </p>
-                          <p className="text-sm text-gray-500">{user.role}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{user.user_name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={user.login_type}
-                        size="small"
-                        className={
-                          user.login_type === "GOOGLE"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-green-100 text-green-800"
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Chip
-                          label={user.is_verified ? "Verified" : "Unverified"}
-                          size="small"
-                          color={user.is_verified ? "success" : "default"}
-                        />
-                        <Chip
-                          label={user.is_approve ? "Approved" : "Pending"}
-                          size="small"
-                          color={user.is_approve ? "success" : "warning"}
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {user.phone?.length > 0 ? (
-                        <div>
-                          <p>{user.phone[0].number}</p>
-                          {user.phone[0].is_primary_number && (
-                            <span className="text-xs text-green-600">
-                              Primary
-                            </span>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-gray-400">-</span>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {isLoading
+            ? Array(5) // number of skeleton rows
+                .fill(0)
+                .map((_, idx) => <SkeletonRow key={idx} />)
+            : table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
                       )}
                     </TableCell>
-                  </TableRow>
-                ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {!isLoading && (
-        <TablePagination
-          component="div"
-          count={data?.totalUsers || 0}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={filters.perPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          className="mt-4"
-          rowsPerPageOptions={[5, 10, 25]}
-        />
-      )}
+                  ))}
+                </TableRow>
+              ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };
