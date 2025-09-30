@@ -28,12 +28,10 @@ const UserAction: React.FC<UserActionProps> = ({ data, refetch }) => {
 
     if (result.isConfirmed) {
       try {
-        const res = await api_url.delete(
-          `/v1/admin-user/delete/user/${userId}`
-        );
+        const res = await api_url.patch(`/v1/admin-user/delete/user/${userId}`);
 
         if (res.status === 200 || res.status === 201) {
-          refetch?.();
+          refetch();
           Swal.fire({
             icon: "success",
             title: "Deleted!",
