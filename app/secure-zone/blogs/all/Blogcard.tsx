@@ -25,17 +25,6 @@ const BlogCard = ({
   onDelete,
   status = "published",
 }: BlogCardProps) => {
-  console.log({
-    id,
-    title,
-    short_description,
-    card_image,
-    category,
-    createdAt,
-    onEdit,
-    onDelete,
-    status,
-  });
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden border border-[#d1fadf] hover:shadow-lg transition-shadow duration-300">
       {/* Image */}

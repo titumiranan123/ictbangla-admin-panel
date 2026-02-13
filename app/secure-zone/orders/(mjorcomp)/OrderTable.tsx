@@ -86,6 +86,15 @@ const OrderTable = ({
       ),
     },
     {
+      accessorKey: "purchase_for",
+      header: "Purchase For ",
+      cell: ({ row }) => (
+        <div className="font-medium w-[140px] flex flex-col ">
+          <p> {row?.original?.purchase_for ?? "ON_LINE"}</p>
+        </div>
+      ),
+    },
+    {
       accessorKey: "price",
       header: "Price",
       cell: ({ row }) => (
@@ -111,8 +120,8 @@ const OrderTable = ({
               row.original.paymentStatus === "PAID"
                 ? "bg-green-100 text-green-800"
                 : row.original.paymentStatus === "PARTIALLY_PAID"
-                ? "bg-yellow-100 text-yellow-800"
-                : "bg-red-100 text-red-800"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-red-100 text-red-800"
             }`}
           >
             {row.original.paymentStatus.replace("_", " ")}
@@ -224,7 +233,7 @@ const OrderTable = ({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 ))}
@@ -242,7 +251,7 @@ const OrderTable = ({
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}

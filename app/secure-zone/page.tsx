@@ -23,32 +23,31 @@ ChartJS.register(
   BarElement,
   Title,
   PointElement,
-  LineElement
+  LineElement,
 );
 
 const DashboardPage = () => {
   const { data: dashboardData, isLoading, error } = useDashboard();
-
   // Calculate derived metrics
   const calculateMetrics = (data: any) => {
     if (!data) return {};
 
     // Calculate average conversion rate
     const monthsWithData = data?.enrollmentTrends?.filter(
-      (t: any) => t.paid > 0 || t.unpaid > 0
+      (t: any) => t.paid > 0 || t.unpaid > 0,
     );
     const avgConversion =
       monthsWithData?.length > 0
         ? monthsWithData?.reduce(
             (sum: number, t: any) => sum + (t.conversionRate || 0),
-            0
+            0,
           ) / monthsWithData?.length
         : 0;
 
     // Calculate total revenue
     const totalRevenue = data?.enrollmentTrends?.reduce(
       (sum: number, t: any) => sum + t.revenue,
-      0
+      0,
     );
 
     // Calculate month-over-month growth
@@ -337,7 +336,7 @@ const DashboardPage = () => {
                   <span className="text-gray-600">Active</span>
                   <span className="font-medium">
                     {Math.round(
-                      enhancedData?.summery?.totalUsers * 0.72
+                      enhancedData?.summery?.totalUsers * 0.72,
                     ).toLocaleString() || "0"}
                   </span>
                 </div>
@@ -539,10 +538,10 @@ const DashboardPage = () => {
                               const value = context.raw || 0;
                               const total = context.dataset.data?.reduce(
                                 (a: number, b: number) => a + b,
-                                0
+                                0,
                               );
                               const percentage = Math.round(
-                                (value / total) * 100
+                                (value / total) * 100,
                               );
                               return `${label}: ${value} (${percentage}%)`;
                             },
@@ -572,10 +571,10 @@ const DashboardPage = () => {
                               const value = context.raw || 0;
                               const total = context.dataset.data?.reduce(
                                 (a: number, b: number) => a + b,
-                                0
+                                0,
                               );
                               const percentage = Math.round(
-                                (value / total) * 100
+                                (value / total) * 100,
                               );
                               return `${label}: ${value} (${percentage}%)`;
                             },

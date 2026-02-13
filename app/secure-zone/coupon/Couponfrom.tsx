@@ -34,9 +34,8 @@ const CouponForm = ({
   const [formData, setFormData] = useState<{ courses: { courseId: string }[] }>(
     {
       courses: [{ courseId: "" }],
-    }
+    },
   );
-  console.log(formData);
   const {
     register,
     handleSubmit,

@@ -25,7 +25,6 @@ const OrdersTable = () => {
   const [editFormData, setEditFormData] = useState<boolean>(false);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const { data: orders, isLoading, refetch } = useAllOrders(filters);
-
   // Extract unique courses for filter dropdown
   const uniqueCourses = useMemo(() => {
     const courseMap = new Map<string, Order["course"]>();

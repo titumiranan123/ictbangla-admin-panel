@@ -16,7 +16,6 @@ const OrderStatusCell = ({ order, refetch }: OrderStatusCellProps) => {
     );
     if (response.status === 201 || response.status === 200) {
       refetch();
-      console.log("response", response);
     }
   };
   return (

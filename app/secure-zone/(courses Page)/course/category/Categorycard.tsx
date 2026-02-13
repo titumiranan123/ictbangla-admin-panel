@@ -18,14 +18,14 @@ const Categorycard: React.FC<props> = ({ data, setEditData, setOpenModal }) => {
     <div className="max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       {/* Image Header */}
       <div className="relative h-48 overflow-hidden">
-        <Image
+        {/* <Image
           src={data?.image}
           alt={data?.title}
           className="object-cover w-full h-full"
           priority
           width={400}
           height={200}
-        />
+        /> */}
         {/* Parent Badge */}
         {data?.isParent && (
           <div className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
@@ -39,14 +39,14 @@ const Categorycard: React.FC<props> = ({ data, setEditData, setOpenModal }) => {
         <div className="flex items-center mb-3">
           {/* Icon */}
           <div className="flex-shrink-0 mr-3">
-            <Image
+            {/* <Image
               src={data?.icon}
               alt="Icon"
               className="w-10 h-10"
               priority
               width={40}
               height={40}
-            />
+            /> */}
           </div>
 
           {/* Title */}
