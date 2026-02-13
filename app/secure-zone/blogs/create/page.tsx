@@ -6,7 +6,7 @@ import { api_url } from "@/hooks/apiurl";
 import Image from "next/image";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import toast from "react-hot-toast";
-import MyTextEditor from "@/component/shared/Texteditor";
+// import MyTextEditor from "@/component/shared/Texteditor";
 
 type FormData = {
   title: string;
@@ -49,15 +49,31 @@ const BlogUploadForm = () => {
     contentImage2: false,
   });
 
-  const [selectedFeatureImage, setSelectedFeatureImage] = useState<string | null>(null);
-  const [selectedCardImage, setSelectedCardImage] = useState<string | null>(null);
-  const [selectedContentImage1, setSelectedContentImage1] = useState<string | null>(null);
-  const [selectedContentImage2, setSelectedContentImage2] = useState<string | null>(null);
+  const [selectedFeatureImage, setSelectedFeatureImage] = useState<
+    string | null
+  >(null);
+  const [selectedCardImage, setSelectedCardImage] = useState<string | null>(
+    null,
+  );
+  const [selectedContentImage1, setSelectedContentImage1] = useState<
+    string | null
+  >(null);
+  const [selectedContentImage2, setSelectedContentImage2] = useState<
+    string | null
+  >(null);
 
-  const featureImageInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>;
-  const cardImageInputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>;
-  const contentImage1InputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>;
-  const contentImage2InputRef = useRef<HTMLInputElement>(null) as React.RefObject<HTMLInputElement>;
+  const featureImageInputRef = useRef<HTMLInputElement>(
+    null,
+  ) as React.RefObject<HTMLInputElement>;
+  const cardImageInputRef = useRef<HTMLInputElement>(
+    null,
+  ) as React.RefObject<HTMLInputElement>;
+  const contentImage1InputRef = useRef<HTMLInputElement>(
+    null,
+  ) as React.RefObject<HTMLInputElement>;
+  const contentImage2InputRef = useRef<HTMLInputElement>(
+    null,
+  ) as React.RefObject<HTMLInputElement>;
 
   const {
     register,
@@ -81,22 +97,29 @@ const BlogUploadForm = () => {
   const contentImage1 = watch("content_image1");
   const contentImage2 = watch("content_image2");
 
-  const categoryOptions = useMemo(() => [
-    { value: "", label: "Select a category", disabled: true },
-    { value: "technology", label: "Technology" },
-    { value: "business", label: "Business" },
-    { value: "health", label: "Health & Wellness" },
-    { value: "education", label: "Education" },
-    { value: "lifestyle", label: "Lifestyle" },
-    { value: "other", label: "Other" },
-  ], []);
+  const categoryOptions = useMemo(
+    () => [
+      { value: "", label: "Select a category", disabled: true },
+      { value: "technology", label: "Technology" },
+      { value: "business", label: "Business" },
+      { value: "health", label: "Health & Wellness" },
+      { value: "education", label: "Education" },
+      { value: "lifestyle", label: "Lifestyle" },
+      { value: "other", label: "Other" },
+    ],
+    [],
+  );
 
   const handleImageUpload = useCallback(
     async (
       e: React.ChangeEvent<HTMLInputElement>,
-      fieldName: "feature_image" | "card_image" | "content_image1" | "content_image2",
+      fieldName:
+        | "feature_image"
+        | "card_image"
+        | "content_image1"
+        | "content_image2",
       setPreview: (value: string | null) => void,
-      currentImage: string | undefined
+      currentImage: string | undefined,
     ) => {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -117,13 +140,14 @@ const BlogUploadForm = () => {
       };
       reader.readAsDataURL(file);
 
-      const uploadKey = fieldName === "content_image1"
-        ? "contentImage1"
-        : fieldName === "content_image2"
-        ? "contentImage2"
-        : fieldName === "feature_image"
-        ? "featureImage"
-        : "cardImage";
+      const uploadKey =
+        fieldName === "content_image1"
+          ? "contentImage1"
+          : fieldName === "content_image2"
+            ? "contentImage2"
+            : fieldName === "feature_image"
+              ? "featureImage"
+              : "cardImage";
 
       setIsUploading((prev) => ({ ...prev, [uploadKey]: true }));
       setUploadProgress((prev) => ({ ...prev, [uploadKey]: 0 }));
@@ -139,14 +163,14 @@ const BlogUploadForm = () => {
             headers: { "Content-Type": "multipart/form-data" },
             onUploadProgress: (progressEvent) => {
               const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / (progressEvent.total || 1)
+                (progressEvent.loaded * 100) / (progressEvent.total || 1),
               );
               setUploadProgress((prev) => ({
                 ...prev,
                 [uploadKey]: percentCompleted,
               }));
             },
-          }
+          },
         );
 
         if (fieldName === "content_image1" || fieldName === "content_image2") {
@@ -166,13 +190,17 @@ const BlogUploadForm = () => {
         setIsUploading((prev) => ({ ...prev, [uploadKey]: false }));
       }
     },
-    [setValue]
+    [setValue],
   );
 
   const handleRemoveImage = useCallback(
     (
-      fieldName: "feature_image" | "card_image" | "content_image1" | "content_image2",
-      setPreview: (value: string | null) => void
+      fieldName:
+        | "feature_image"
+        | "card_image"
+        | "content_image1"
+        | "content_image2",
+      setPreview: (value: string | null) => void,
     ) => {
       setPreview(null);
 
@@ -193,12 +221,15 @@ const BlogUploadForm = () => {
         refMap[fieldName].current!.value = "";
       }
     },
-    [setValue]
+    [setValue],
   );
 
-  const triggerFileInput = useCallback((ref: React.RefObject<HTMLInputElement>) => {
-    if (ref.current) ref.current.click();
-  }, []);
+  const triggerFileInput = useCallback(
+    (ref: React.RefObject<HTMLInputElement>) => {
+      if (ref.current) ref.current.click();
+    },
+    [],
+  );
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -253,15 +284,22 @@ const BlogUploadForm = () => {
       contentImage1: 0,
       contentImage2: 0,
     });
-    [featureImageInputRef, cardImageInputRef, contentImage1InputRef, contentImage2InputRef].forEach(
-      (ref) => {
-        if (ref.current) ref.current.value = "";
-      }
-    );
+    [
+      featureImageInputRef,
+      cardImageInputRef,
+      contentImage1InputRef,
+      contentImage2InputRef,
+    ].forEach((ref) => {
+      if (ref.current) ref.current.value = "";
+    });
   }, [reset]);
 
   const renderImageUploadSection = (
-    fieldName: "feature_image" | "card_image" | "content_image1" | "content_image2",
+    fieldName:
+      | "feature_image"
+      | "card_image"
+      | "content_image1"
+      | "content_image2",
     label: string,
     required: boolean,
     selectedImage: string | null,
@@ -269,10 +307,13 @@ const BlogUploadForm = () => {
     ref: React.RefObject<HTMLInputElement>,
     currentImage: string | undefined,
     uploadKey: keyof typeof isUploading,
-    captionField?: string
+    captionField?: string,
   ) => {
-    const isContentImage = fieldName === "content_image1" || fieldName === "content_image2";
-    const imageUrl = isContentImage ? watch(fieldName)?.image : watch(fieldName);
+    const isContentImage =
+      fieldName === "content_image1" || fieldName === "content_image2";
+    const imageUrl = isContentImage
+      ? watch(fieldName)?.image
+      : watch(fieldName);
 
     return (
       <div className="space-y-4">
@@ -367,7 +408,7 @@ const BlogUploadForm = () => {
   const renderListInput = (
     name: "learnPoints" | "requirements",
     label: string,
-    placeholder: string
+    placeholder: string,
   ) => (
     <div className="space-y-4">
       <label className="block text-sm font-medium mb-1">
@@ -535,7 +576,7 @@ const BlogUploadForm = () => {
             setSelectedFeatureImage,
             featureImageInputRef,
             featureImageFile,
-            "featureImage"
+            "featureImage",
           )}
         </div>
 
@@ -549,7 +590,7 @@ const BlogUploadForm = () => {
             setSelectedCardImage,
             cardImageInputRef,
             cardImageFile,
-            "cardImage"
+            "cardImage",
           )}
         </div>
 
@@ -590,11 +631,7 @@ const BlogUploadForm = () => {
             rules={{ required: "Description is required" }}
             render={({ field, fieldState: { error } }) => (
               <div>
-                <MyTextEditor
-                  error={error?.message || ""}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
+                <textarea {...field} />
                 {error && (
                   <p className="mt-1 text-sm text-red-600">{error.message}</p>
                 )}
@@ -615,7 +652,7 @@ const BlogUploadForm = () => {
             contentImage1InputRef,
             contentImage1?.image,
             "contentImage1",
-            "content_image1.caption"
+            "content_image1.caption",
           )}
         </div>
 
@@ -631,24 +668,16 @@ const BlogUploadForm = () => {
             contentImage2InputRef,
             contentImage2?.image,
             "contentImage2",
-            "content_image2.caption"
+            "content_image2.caption",
           )}
         </div>
 
         {/* Learning Points */}
-        {renderListInput(
-          "learnPoints",
-          "What You'll Learn",
-          "Learning point"
-        )}
+        {renderListInput("learnPoints", "What You'll Learn", "Learning point")}
 
         {/* Requirements */}
         <div className="mt-6">
-          {renderListInput(
-            "requirements",
-            "Requirements",
-            "Requirement"
-          )}
+          {renderListInput("requirements", "Requirements", "Requirement")}
         </div>
 
         {/* Submit Button - Fixed to ensure it's always visible */}

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller, useForm } from "react-hook-form";
 import Input from "../shared/Input";
-import MyTextEditor from "../shared/Texteditor";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import useCategory from "@/hooks/useCategory";
@@ -57,7 +56,7 @@ const BasicInfo = ({
           Fill in the basic details about your course
         </p>
       </div>
-      
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 gap-6">
           {/* Course Title */}
@@ -66,40 +65,40 @@ const BasicInfo = ({
               label="Course Title"
               register={register}
               error={errors.title}
-              validation={{ 
+              validation={{
                 required: "Course Title is required",
                 minLength: {
                   value: 10,
-                  message: "Title should be at least 10 characters"
-                }
+                  message: "Title should be at least 10 characters",
+                },
               }}
               name="title"
               type="text"
               placeholder="e.g., Advanced React Development with TypeScript"
-              className={`w-full p-3 border ${errors.title ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500`}
+              className={`w-full p-3 border ${errors.title ? "border-red-300" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500`}
             />
             {watchedValues.title?.length > 0 && !errors.title && (
               <FiCheckCircle className="absolute right-3 top-10 text-green-500" />
             )}
           </div>
-          
+
           {/* Short Description */}
           <div className="relative">
             <Input
               label="Short Description"
               register={register}
               error={errors.short_description}
-              validation={{ 
+              validation={{
                 required: "Short Description is required",
                 maxLength: {
                   value: 460,
-                  message: "Should be less than 160 characters"
-                }
+                  message: "Should be less than 160 characters",
+                },
               }}
               name="short_description"
               type="text"
               placeholder="Brief summary that appears in course cards (max 460 chars)"
-              className={`w-full p-3 border ${errors.short_description ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500`}
+              className={`w-full p-3 border ${errors.short_description ? "border-red-300" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500`}
             />
             <div className="absolute right-3 top-10 text-xs text-gray-500">
               {watchedValues.short_description?.length || 0}/460
@@ -119,18 +118,17 @@ const BasicInfo = ({
             <Controller
               name="description"
               control={control}
-              rules={{ 
+              rules={{
                 required: "Description is required",
-                validate: (value) => 
-                  value?.length > 50 || "Description should be at least 50 characters"
+                validate: (value) =>
+                  value?.length > 50 ||
+                  "Description should be at least 50 characters",
               }}
               render={({ field, fieldState: { error } }) => (
-                <div className={`border ${error ? 'border-red-300' : 'border-gray-300'} rounded-lg overflow-hidden`}>
-                  <MyTextEditor
-                    value={field.value}
-                    onChange={field.onChange}
-                    error={error?.message || ""}
-                  />
+                <div
+                  className={`border ${error ? "border-red-300" : "border-gray-300"} rounded-lg overflow-hidden`}
+                >
+                  <textarea {...field} />
                   <div className="px-3 py-2 bg-gray-50 text-xs text-gray-500 flex justify-between">
                     <span>Minimum 50 characters</span>
                     <span>{field.value?.length || 0} characters</span>
@@ -147,7 +145,7 @@ const BasicInfo = ({
               <label className="text-gray-700 font-medium">Category</label>
               <div className="relative">
                 <select
-                  className={`w-full p-3 border ${errors.category ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none`}
+                  className={`w-full p-3 border ${errors.category ? "border-red-300" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none`}
                   {...register("category", {
                     required: "Category is required",
                   })}
@@ -160,8 +158,12 @@ const BasicInfo = ({
                   ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                   </svg>
                 </div>
               </div>
@@ -177,7 +179,7 @@ const BasicInfo = ({
               <label className="text-gray-700 font-medium">Status</label>
               <div className="relative">
                 <select
-                  className={`w-full p-3 border ${errors.status ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none`}
+                  className={`w-full p-3 border ${errors.status ? "border-red-300" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none`}
                   {...register("status", {
                     required: "Status is required",
                   })}
@@ -189,8 +191,12 @@ const BasicInfo = ({
                   <option value="REJECTED">Rejected</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                   </svg>
                 </div>
               </div>
@@ -206,7 +212,7 @@ const BasicInfo = ({
               <label className="text-gray-700 font-medium">Level</label>
               <div className="relative">
                 <select
-                  className={`w-full p-3 border ${errors.level ? 'border-red-300' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none`}
+                  className={`w-full p-3 border ${errors.level ? "border-red-300" : "border-gray-300"} rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none`}
                   {...register("level", {
                     required: "Level is required",
                   })}
@@ -218,8 +224,12 @@ const BasicInfo = ({
                   <option value="EXPERT/SPECIALIZED">Expert/Specialized</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                   </svg>
                 </div>
               </div>
